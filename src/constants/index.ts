@@ -12,6 +12,18 @@ import {
   carrent,
   jobit,
   // tripguide,
+  css,
+  figma,
+  git,
+  html,
+  javascript,
+  mongodb,
+  nodejs,
+  reactjs,
+  redux,
+  tailwind,
+  typescript,
+  threejs,
 } from '../assets';
 
 export const navLinks: TNavLink[] = [
@@ -61,58 +73,54 @@ const services: TService[] = [
 ];
 
 const technologies: TTechnology[] = [
-  //   {
-  //     name: 'HTML 5',
-  //     icon: html,
-  //   },
-  //   {
-  //     name: 'CSS 3',
-  //     icon: css,
-  //   },
-  //   {
-  //     name: 'JavaScript',
-  //     icon: javascript,
-  //   },
-  //   {
-  //     name: 'TypeScript',
-  //     icon: typescript,
-  //   },
-  //   {
-  //     name: 'React JS',
-  //     icon: reactjs,
-  //   },
-  //   {
-  //     name: 'Redux Toolkit',
-  //     icon: redux,
-  //   },
-  //   {
-  //     name: 'Tailwind CSS',
-  //     icon: tailwind,
-  //   },
-  //   {
-  //     name: 'Node JS',
-  //     icon: nodejs,
-  //   },
-  //   {
-  //     name: 'MongoDB',
-  //     icon: mongodb,
-  //   },
-  //   {
-  //     name: 'Three JS',
-  //     icon: threejs,
-  //   },
-  //   {
-  //     name: 'git',
-  //     icon: git,
-  //   },
-  //   {
-  //     name: 'figma',
-  //     icon: figma,
-  //   },
-  //   {
-  //     name: 'docker',
-  //     icon: docker,
-  //   },
+  {
+    name: 'SQL',
+    icon: html,
+  },
+  {
+    name: 'Python',
+    icon: javascript,
+  },
+  {
+    name: 'Power BI',
+    icon: css,
+  },
+  {
+    name: 'Excel',
+    icon: typescript,
+  },
+  {
+    name: 'Power Apps',
+    icon: reactjs,
+  },
+  {
+    name: 'n8n',
+    icon: redux,
+  },
+  {
+    name: 'Selenium',
+    icon: tailwind,
+  },
+  {
+    name: 'Java',
+    icon: nodejs,
+  },
+  {
+    name: 'Git',
+    icon: git,
+  },
+  {
+    name: 'Tableau',
+    icon: figma,
+  },
+  {
+    name: 'MySQL',
+    icon: mongodb,
+  },
+  {
+    name: 'MongoDB',
+    icon: threejs,
+  },
 ];
 
 const experiences: TExperience[] = [

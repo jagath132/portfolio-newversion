@@ -30,8 +30,8 @@ const App = () => {
         </div>
         <About />
         <Education />
-        <Experience />
         <Tech />
+        <Experience />
         <Projects />
         <div className="relative z-0">
           <Contact />

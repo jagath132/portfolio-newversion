@@ -32,6 +32,7 @@ type TConfig = {
   } & TSection;
   sections: {
     about: Required<TSection>;
+    skills: TSection;
     experience: TSection;
     education: TSection;
     works: Required<TSection>;
@@ -70,6 +71,10 @@ export const config: TConfig = {
       content: `Data Analytical and detail-driven Data Analyst skilled in SQL, Python, Power BI, and process automation tools such as Power Apps and n8n. Experienced in transforming raw data into
         strategic insights and developing interactive dashboards to support business and cybersecurity operations.Strong foundation in data integration, workflow automation, and testing across diverse environments.
         Proven ability to streamline processes, enhance decision-making, and bridge technical solutions with business objectives.`,
+    },
+    skills: {
+      p: 'My technical skills',
+      h2: 'Skills.',
     },
     experience: {
       p: 'What I have done so far',

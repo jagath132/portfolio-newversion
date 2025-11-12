@@ -57,7 +57,7 @@ const Projects = () => {
       <div className="flex w-full">
         <motion.p
           variants={fadeIn('', '', 0.1, 1)}
-          className="text-secondary mt-3 max-w-3xl text-[17px] leading-[30px]"
+          className="text-secondary mt-3 text-[17px] leading-[30px]"
         >
           {config.sections.works.content}
         </motion.p>
