@@ -71,8 +71,10 @@ const Navbar = () => {
             <li
               key={nav.id}
               className={`${
-                active === nav.id ? 'text-white' : 'text-secondary'
-              } cursor-pointer text-[18px] font-medium hover:text-white`}
+                active === nav.id
+                  ? 'text-white bg-gradient-to-r from-emerald-400 to-purple-600 rounded-full px-3 py-1'
+                  : 'text-secondary'
+              } cursor-pointer text-[18px] font-medium hover:text-white transition-all duration-300`}
             >
               <a href={`#${nav.id}`}>{nav.title}</a>
             </li>
@@ -97,8 +99,10 @@ const Navbar = () => {
                 <li
                   key={nav.id}
                   className={`font-poppins cursor-pointer text-[16px] font-medium ${
-                    active === nav.id ? 'text-white' : 'text-secondary'
-                  }`}
+                    active === nav.id
+                      ? 'text-white bg-gradient-to-r from-emerald-400 to-purple-600 rounded-full px-3 py-1'
+                      : 'text-secondary'
+                  } transition-all duration-300`}
                   onClick={() => {
                     setToggle(!toggle);
                   }}
