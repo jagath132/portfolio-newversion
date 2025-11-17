@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 import { SectionWrapper } from '../../hoc';
 import { skillCategories } from '../../constants';
@@ -11,8 +11,6 @@ import { Header } from '../atoms/Header';
 interface SkillCardProps {
   name: string;
   icon: string;
-  index: number;
-  categoryTitle: string;
 }
 
 interface CategoryProps {
@@ -33,26 +31,26 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden: { 
-    opacity: 0, 
+  hidden: {
+    opacity: 0,
     y: 20,
     scale: 0.9,
   },
-  show: { 
-    opacity: 1, 
+  show: {
+    opacity: 1,
     y: 0,
     scale: 1,
     transition: {
-      type: "spring",
+      type: 'spring',
       stiffness: 100,
       damping: 12,
     },
   },
 };
 
-const SkillCard: React.FC<SkillCardProps> = ({ name, icon, index, categoryTitle }) => {
+const SkillCard: React.FC<SkillCardProps> = ({ name, icon }) => {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   return (
     <motion.div
       variants={cardVariants}
@@ -66,32 +64,32 @@ const SkillCard: React.FC<SkillCardProps> = ({ name, icon, index, categoryTitle 
           className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100"
           transition={{ duration: 0.3 }}
         />
-        
+
         {/* Icon container with enhanced styling */}
-        <motion.div 
+        <motion.div
           className="relative z-10 h-16 w-16 rounded-xl bg-gradient-to-br from-white/[0.9] to-white/[0.7] p-3 shadow-lg group-hover:shadow-xl"
           whileHover={{ rotate: [0, -5, 5, 0] }}
           transition={{ duration: 0.6 }}
         >
-          <motion.img 
-            src={icon} 
-            alt={name} 
+          <motion.img
+            src={icon}
+            alt={name}
             className="h-full w-full object-contain filter group-hover:brightness-110"
             initial={false}
             animate={{ scale: isHovered ? 1.1 : 1 }}
             transition={{ duration: 0.3 }}
           />
         </motion.div>
-        
+
         {/* Skill name with enhanced typography */}
-        <motion.p 
+        <motion.p
           className="relative z-10 text-center text-[13px] font-semibold text-white/90 group-hover:text-white transition-colors duration-300"
           initial={false}
           animate={{ y: isHovered ? -2 : 0 }}
         >
           {name}
         </motion.p>
-        
+
         {/* Floating particles effect */}
         <AnimatePresence>
           {isHovered && (
@@ -132,10 +130,7 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, index }) 
   const [isExpanded, setIsExpanded] = useState(true); // Show all categories expanded by default
 
   return (
-    <motion.div
-      variants={slideIn('up', 'spring', index * 0.2, 0.75)}
-      className="w-full"
-    >
+    <motion.div variants={slideIn('up', 'spring', index * 0.2, 0.75)} className="w-full">
       {/* Category Header */}
       <motion.div
         className="flex items-center justify-center gap-4 mb-8 cursor-pointer"
@@ -168,18 +163,12 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, index }) 
             transition={{ duration: 0.5, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <motion.div 
+            <motion.div
               variants={containerVariants}
               className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 justify-items-center"
             >
               {technologies.map((technology, techIndex) => (
-                <SkillCard
-                  key={technology.name}
-                  name={technology.name}
-                  icon={technology.icon}
-                  index={techIndex}
-                  categoryTitle={title}
-                />
+                <SkillCard key={technology.name} name={technology.name} icon={technology.icon} />
               ))}
             </motion.div>
           </motion.div>

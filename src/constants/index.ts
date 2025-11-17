@@ -11,12 +11,7 @@ import {
   L_T, // FIXED: variable cannot be L&T
   carrent,
   jobit,
-  css,
-  figma,
   git,
-  html,
-  javascript,
-  redux,
   python,
   sql,
   techGithub,
