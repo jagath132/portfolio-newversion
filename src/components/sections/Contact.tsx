@@ -21,6 +21,7 @@ const Contact = () => {
   const [form, setForm] = useState(INITIAL_STATE);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -54,7 +55,8 @@ const Contact = () => {
     } catch (error) {
       setLoading(false);
       console.log(error);
-      alert('Something went wrong.');
+      setError(true);
+      setTimeout(() => setError(false), 5000);
     }
   };
 
@@ -68,6 +70,16 @@ const Contact = () => {
           className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50"
         >
           Thank you! Your message has been sent successfully.
+        </motion.div>
+      )}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -50 }}
+          className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50"
+        >
+          Something went wrong. Please try again.
         </motion.div>
       )}
       <motion.div
