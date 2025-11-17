@@ -167,7 +167,7 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, index }) 
               variants={containerVariants}
               className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 justify-items-center"
             >
-              {technologies.map((technology, techIndex) => (
+              {technologies.map((technology) => (
                 <SkillCard key={technology.name} name={technology.name} icon={technology.icon} />
               ))}
             </motion.div>
