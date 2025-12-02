@@ -31,10 +31,7 @@ import powerapps from './tech/powerapps.png';
 import appium from './tech/appium.png';
 import quadratic from './tech/quadratic.png';
 
-import meta from './company/meta.png';
-import shopify from './company/shopify.png';
-import starbucks from './company/starbucks.png';
-import tesla from './company/tesla.png';
+
 import Fastack from './company/Fastack.png';
 import HOA from './company/HOA.png';
 import intelizign from './company/intelizign.jpeg';
@@ -76,10 +73,7 @@ export {
   powerapps,
   appium,
   quadratic,
-  meta,
-  shopify,
-  starbucks,
-  tesla,
+
   Fastack,
   HOA,
   intelizign,

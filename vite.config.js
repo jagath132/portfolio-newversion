@@ -1,5 +1,5 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,11 +9,26 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          three: ['three', '@react-three/fiber', '@react-three/drei'],
-          ui: ['framer-motion', 'react-parallax-tilt'],
+          three: ['three', '@react-three/fiber', '@react-three/drei', 'maath'],
+          ui: ['framer-motion', 'react-parallax-tilt', 'lucide-react'],
+          email: ['@emailjs/browser'],
+          router: ['react-router-dom'],
+          timeline: ['react-vertical-timeline-component'],
         },
       },
     },
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 2000,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+  },
+  server: {
+    hmr: {
+      overlay: false,
+    },
   },
 });

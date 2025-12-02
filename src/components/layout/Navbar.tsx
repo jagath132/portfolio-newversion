@@ -49,9 +49,8 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`${styles.paddingX} fixed top-0 z-20 flex w-full items-center py-5 ${
-        scrolled ? 'bg-primary' : 'bg-transparent'
-      }`}
+      className={`${styles.paddingX} fixed top-0 z-20 flex w-full items-center py-5 transition-all duration-300 ${scrolled ? 'glass-card py-3' : 'bg-transparent'
+        }`}
     >
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
         <Link
@@ -61,8 +60,8 @@ const Navbar = () => {
             window.scrollTo(0, 0);
           }}
         >
-          <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 via-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
-            <span className="text-white font-black text-2xl tracking-wider">JR</span>
+          <div className="w-14 h-14 bg-gradient-to-br from-accent-cyan via-purple-500 to-accent-pink rounded-2xl flex items-center justify-center shadow-neon">
+            <span className="text-white font-display font-bold text-2xl tracking-wider">JR</span>
           </div>
         </Link>
 
@@ -70,11 +69,10 @@ const Navbar = () => {
           {navLinks.map(nav => (
             <li
               key={nav.id}
-              className={`${
-                active === nav.id
-                  ? 'text-white bg-gradient-to-r from-emerald-400 to-purple-600 rounded-full px-3 py-1'
-                  : 'text-secondary'
-              } cursor-pointer text-[18px] font-medium hover:text-white transition-all duration-300`}
+              className={`${active === nav.id
+                ? 'text-accent-cyan'
+                : 'text-secondary'
+                } cursor-pointer text-[18px] font-medium hover:text-white transition-all duration-300 font-display`}
             >
               <a href={`#${nav.id}`}>{nav.title}</a>
             </li>
@@ -90,19 +88,17 @@ const Navbar = () => {
           />
 
           <div
-            className={`${
-              !toggle ? 'hidden' : 'flex'
-            } black-gradient absolute right-0 top-20 z-10 mx-4 my-2 min-w-[140px] rounded-xl p-6`}
+            className={`${!toggle ? 'hidden' : 'flex'
+              } black-gradient absolute right-0 top-20 z-10 mx-4 my-2 min-w-[140px] rounded-xl p-6`}
           >
             <ul className="flex flex-1 list-none flex-col items-start justify-end gap-4">
               {navLinks.map(nav => (
                 <li
                   key={nav.id}
-                  className={`font-poppins cursor-pointer text-[16px] font-medium ${
-                    active === nav.id
-                      ? 'text-white bg-gradient-to-r from-emerald-400 to-purple-600 rounded-full px-3 py-1'
-                      : 'text-secondary'
-                  } transition-all duration-300`}
+                  className={`font-display cursor-pointer text-[16px] font-medium ${active === nav.id
+                    ? 'text-accent-cyan'
+                    : 'text-secondary'
+                    } transition-all duration-300`}
                   onClick={() => {
                     setToggle(!toggle);
                   }}

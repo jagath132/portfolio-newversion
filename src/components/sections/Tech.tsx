@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
 import { SectionWrapper } from '../../hoc';
 import { skillCategories } from '../../constants';
-import { fadeIn, textVariant, slideIn } from '../../utils/motion';
 import { config } from '../../constants/config';
 import { Header } from '../atoms/Header';
 
 interface SkillCardProps {
   name: string;
   icon: string;
+  index: number;
 }
 
 interface CategoryProps {
@@ -19,188 +18,101 @@ interface CategoryProps {
   index: number;
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-const cardVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-    scale: 0.9,
-  },
-  show: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      type: 'spring',
-      stiffness: 100,
-      damping: 12,
-    },
-  },
-};
-
 const SkillCard: React.FC<SkillCardProps> = ({ name, icon }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
-    <motion.div
-      variants={cardVariants}
-      className="group relative"
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-    >
-      <div className="flex flex-col items-center justify-center gap-4 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] p-6 backdrop-blur-sm border border-white/[0.1] shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2">
-        {/* Animated background gradient */}
-        <motion.div
-          className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100"
-          transition={{ duration: 0.3 }}
-        />
-
-        {/* Icon container with enhanced styling */}
-        <motion.div
-          className="relative z-10 h-16 w-16 rounded-xl bg-gradient-to-br from-white/[0.9] to-white/[0.7] p-3 shadow-lg group-hover:shadow-xl"
-          whileHover={{ rotate: [0, -5, 5, 0] }}
-          transition={{ duration: 0.6 }}
-        >
-          <motion.img
+    <div className="group relative w-full">
+      {/* Card Content */}
+      <div className="relative flex h-full flex-col items-center justify-center gap-4 rounded-xl border border-white/10 bg-gray-900/50 p-6 backdrop-blur-md transition-all duration-300 hover:border-accent-cyan/50 hover:bg-gray-900/80 hover:shadow-neon">
+        {/* Icon Container */}
+        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-white/10 to-white/5 p-3 shadow-inner ring-1 ring-white/10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+          <img
             src={icon}
             alt={name}
-            className="h-full w-full object-contain filter group-hover:brightness-110"
-            initial={false}
-            animate={{ scale: isHovered ? 1.1 : 1 }}
-            transition={{ duration: 0.3 }}
+            className="h-10 w-10 object-contain drop-shadow-lg filter transition-all duration-300 group-hover:brightness-125"
           />
-        </motion.div>
 
-        {/* Skill name with enhanced typography */}
-        <motion.p
-          className="relative z-10 text-center text-[13px] font-semibold text-white/90 group-hover:text-white transition-colors duration-300"
-          initial={false}
-          animate={{ y: isHovered ? -2 : 0 }}
-        >
+          {/* Glow effect behind icon */}
+          <div className="absolute inset-0 -z-10 rounded-2xl bg-purple-500/20 blur-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        </div>
+
+        {/* Skill Name */}
+        <span className="text-center text-sm font-medium text-gray-300 transition-colors duration-300 group-hover:text-white">
           {name}
-        </motion.p>
+        </span>
 
-        {/* Floating particles effect */}
-        <AnimatePresence>
-          {isHovered && (
-            <>
-              {[...Array(6)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1 h-1 bg-blue-400 rounded-full"
-                  initial={{
-                    x: Math.random() * 100 - 50,
-                    y: Math.random() * 100 - 50,
-                    opacity: 0,
-                    scale: 0,
-                  }}
-                  animate={{
-                    x: Math.random() * 100 - 50,
-                    y: Math.random() * 100 - 50,
-                    opacity: [0, 1, 0],
-                    scale: [0, 1, 0],
-                  }}
-                  exit={{ opacity: 0, scale: 0 }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                  }}
-                />
-              ))}
-            </>
-          )}
-        </AnimatePresence>
+        {/* Decorative Corner Accents */}
+        <div className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-white/10 transition-colors duration-300 group-hover:bg-purple-500/50" />
+        <div className="absolute bottom-2 left-2 h-1.5 w-1.5 rounded-full bg-white/10 transition-colors duration-300 group-hover:bg-blue-500/50" />
       </div>
-    </motion.div>
+    </div>
   );
 };
 
-const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, index }) => {
-  const [isExpanded, setIsExpanded] = useState(true); // Show all categories expanded by default
+const SkillCategory: React.FC<CategoryProps> = ({ title, technologies }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <motion.div variants={slideIn('up', 'spring', index * 0.2, 0.75)} className="w-full">
+    <div className="w-full overflow-hidden rounded-3xl border border-white/5 bg-black/20 backdrop-blur-sm">
       {/* Category Header */}
-      <motion.div
-        className="flex items-center justify-center gap-4 mb-8 cursor-pointer"
+      <button
         onClick={() => setIsExpanded(!isExpanded)}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+        className="flex w-full items-center justify-between p-6 transition-colors hover:bg-white/5"
       >
-        <motion.h3
-          variants={textVariant()}
-          className="text-white font-bold text-[24px] text-center whitespace-nowrap bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+        <div className="flex items-center gap-4">
+          <div className="h-8 w-1 rounded-full bg-gradient-to-b from-accent-cyan to-accent-pink" />
+          <h3 className="text-xl font-bold text-white md:text-2xl">{title}</h3>
+          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/60">
+            {technologies.length}
+          </span>
+        </div>
+
+        <div
+          className="rounded-full bg-white/5 p-2 text-white/70 backdrop-blur-md transition-transform duration-300"
+          style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
         >
-          {title}
-        </motion.h3>
-        <motion.div
-          animate={{ rotate: isExpanded ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-          className="text-white/70"
-        >
-          <ChevronDown size={24} />
-        </motion.div>
-      </motion.div>
+          <ChevronDown size={20} />
+        </div>
+      </button>
 
       {/* Skills Grid */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.5, ease: 'easeInOut' }}
-            className="overflow-hidden"
-          >
-            <motion.div
-              variants={containerVariants}
-              className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 justify-items-center"
-            >
-              {technologies.map((technology) => (
-                <SkillCard key={technology.name} name={technology.name} icon={technology.icon} />
-              ))}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+      {isExpanded && (
+        <div className="transition-all duration-400">
+          <div className="grid grid-cols-2 gap-4 p-6 pt-0 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {technologies.map((technology, idx) => (
+              <SkillCard
+                key={technology.name}
+                name={technology.name}
+                icon={technology.icon}
+                index={idx}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
 const Tech = () => {
   return (
     <>
-      <Header useMotion={true} {...config.sections.skills} />
+      <Header {...config.sections.skills} />
 
-      <motion.div
-        variants={fadeIn('', '', 0.1, 1)}
-        className="text-secondary mt-4 text-[17px] leading-[30px] text-justify space-y-6"
-      >
+      <div className="mt-4 max-w-3xl text-[17px] leading-[30px] text-secondary">
         <p>
-          Here are the key technologies and tools I work with to deliver data-driven solutions and
-          automate business processes. Each skill represents a piece of my expertise in building
-          efficient, scalable solutions.
+          I leverage a diverse set of technologies to build robust, scalable applications. From
+          front-end interfaces to back-end logic and data analysis, my toolkit is constantly
+          evolving to meet modern development standards.
         </p>
-      </motion.div>
+      </div>
 
-      <div className="mt-20 space-y-16">
-        {skillCategories.map((category, categoryIndex) => (
+      <div className="mt-16 flex flex-col gap-8">
+        {skillCategories.map((category, index) => (
           <SkillCategory
             key={category.title}
             title={category.title}
             technologies={category.technologies}
-            index={categoryIndex}
+            index={index}
           />
         ))}
       </div>
