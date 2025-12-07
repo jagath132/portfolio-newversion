@@ -11,7 +11,6 @@ export default defineConfig({
           vendor: ['react', 'react-dom'],
           three: ['three', '@react-three/fiber', '@react-three/drei', 'maath'],
           ui: ['framer-motion', 'react-parallax-tilt', 'lucide-react'],
-          email: ['@emailjs/browser'],
           router: ['react-router-dom'],
           timeline: ['react-vertical-timeline-component'],
         },
