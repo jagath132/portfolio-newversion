@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
-
+import { useFirestore } from '../../hooks/useFirestore';
 import { SectionWrapper } from '../../hoc';
-import { skillCategories } from '../../constants';
 import { config } from '../../constants/config';
 import { Header } from '../atoms/Header';
 
@@ -94,6 +93,35 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies }) => {
 };
 
 const Tech = () => {
+  const { getAll, loading } = useFirestore('skills');
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      const skills = await getAll();
+
+      // Group skills by category
+      const grouped = skills.reduce((acc: any, skill: any) => {
+        const cat = skill.category || 'Other';
+        if (!acc[cat]) {
+          acc[cat] = [];
+        }
+        acc[cat].push(skill);
+        return acc;
+      }, {});
+
+      const catArray = Object.keys(grouped).map(key => ({
+        title: key,
+        technologies: grouped[key]
+      }));
+
+      setCategories(catArray);
+    };
+    fetchSkills();
+  }, [getAll]);
+
+  if (loading) return null;
+
   return (
     <>
       <Header {...config.sections.skills} />
@@ -107,7 +135,7 @@ const Tech = () => {
       </div>
 
       <div className="mt-16 flex flex-col gap-8">
-        {skillCategories.map((category, index) => (
+        {categories.map((category, index) => (
           <SkillCategory
             key={category.title}
             title={category.title}

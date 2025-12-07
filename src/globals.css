@@ -76,6 +76,7 @@ html {
   background: linear-gradient(to top, #f12711, #f5af19);
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -87,6 +88,7 @@ html {
   background: linear-gradient(to top, #11998e, #38ef7d);
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -99,6 +101,7 @@ html {
   background: linear-gradient(to top, #2f80ed, #56ccf2);
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -110,6 +113,7 @@ html {
   background: linear-gradient(to top, #ec008c, #fc6767);
   /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -126,6 +130,7 @@ html {
 }
 
 @keyframes mulShdSpin {
+
   0%,
   100% {
     box-shadow:
@@ -229,26 +234,32 @@ html {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px) translateX(0px);
     opacity: 0;
   }
+
   10% {
     opacity: 0.8;
   }
+
   90% {
     opacity: 0.8;
   }
+
   100% {
     transform: translateY(-100px) translateX(50px);
     opacity: 0;
@@ -256,11 +267,13 @@ html {
 }
 
 @keyframes pulse-glow {
+
   0%,
   100% {
     opacity: 0.5;
     filter: drop-shadow(0 0 10px rgba(0, 242, 234, 0.3));
   }
+
   50% {
     opacity: 1;
     filter: drop-shadow(0 0 20px rgba(0, 242, 234, 0.6));
@@ -271,6 +284,7 @@ html {
   0% {
     background-position: -1000px 0;
   }
+
   100% {
     background-position: 1000px 0;
   }
@@ -281,6 +295,7 @@ html {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -288,12 +303,14 @@ html {
 }
 
 @keyframes glow-animation {
+
   0%,
   100% {
     box-shadow:
       0 0 5px rgba(0, 242, 234, 0.5),
       0 0 10px rgba(0, 242, 234, 0.3);
   }
+
   50% {
     box-shadow:
       0 0 20px rgba(0, 242, 234, 0.8),
@@ -302,10 +319,12 @@ html {
 }
 
 @keyframes bounce-subtle {
+
   0%,
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-5px);
   }
@@ -315,6 +334,7 @@ html {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -324,9 +344,11 @@ html {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -422,6 +444,7 @@ footer a[aria-label] {
     transform: scale(0);
     opacity: 1;
   }
+
   100% {
     transform: scale(4);
     opacity: 0;
@@ -433,9 +456,11 @@ footer a[aria-label] {
   0% {
     box-shadow: 0 0 0 0 rgba(0, 242, 234, 0.4);
   }
+
   50% {
     box-shadow: 0 0 0 10px rgba(0, 242, 234, 0.2);
   }
+
   100% {
     box-shadow: 0 0 0 20px rgba(0, 242, 234, 0);
   }
@@ -446,10 +471,12 @@ footer a[aria-label] {
     border-color: rgba(0, 242, 234, 0.5);
     box-shadow: 0 0 5px rgba(0, 242, 234, 0.3);
   }
+
   50% {
     border-color: rgba(168, 85, 247, 0.5);
     box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
   }
+
   100% {
     border-color: rgba(0, 242, 234, 0.5);
     box-shadow: 0 0 5px rgba(0, 242, 234, 0.3);
@@ -461,6 +488,7 @@ footer a[aria-label] {
     transform: scale(0.95);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -471,6 +499,7 @@ footer a[aria-label] {
   from {
     backdrop-filter: blur(0px);
   }
+
   to {
     backdrop-filter: blur(8px);
   }
@@ -486,4 +515,147 @@ footer a[aria-label] {
 
 .animate-scale-up {
   animation: scale-up 0.3s ease-out;
+}
+
+/* Animations for Admin Dashboard */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translate3d(-20px, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale3d(0.95, 0.95, 0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+/* Tailwind Animate Polyfillish classes */
+.animate-in {
+  animation-duration: 0.15s;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.zoom-in {
+  animation-name: zoomIn;
+}
+
+.zoom-in-95 {
+  animation-name: zoomIn95;
+}
+
+@keyframes zoomIn95 {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.slide-in-from-top-4 {
+  animation-name: slideInFromTop4;
+}
+
+@keyframes slideInFromTop4 {
+  from {
+    transform: translateY(-1rem);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-from-bottom-8 {
+  animation-name: slideInFromBottom8;
+}
+
+@keyframes slideInFromBottom8 {
+  from {
+    transform: translateY(2rem);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-from-left-2 {
+  animation-name: slideInFromLeft2;
+}
+
+@keyframes slideInFromLeft2 {
+  from {
+    transform: translateX(-0.5rem);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Custom Scrollbar for admin panel */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #100d25;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #2b2b42;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #00f2ea;
 }

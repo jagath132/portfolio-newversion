@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SectionWrapper } from '../../hoc';
-import { projects } from '../../constants';
+import { useFirestore } from '../../hooks/useFirestore';
 import { config } from '../../constants/config';
 import { Header } from '../atoms/Header';
 import { TProject } from '../../types';
@@ -77,17 +77,19 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
                 animate={{ opacity: isHovered ? 1 : 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <motion.a
-                  href={sourceCodeLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-accent-cyan/90 hover:bg-accent-cyan p-4 rounded-full text-black transition-all backdrop-blur-sm"
-                  whileHover={{ scale: 1.15 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={e => e.stopPropagation()}
-                >
-                  <Github size={24} />
-                </motion.a>
+                {sourceCodeLink && (
+                  <motion.a
+                    href={sourceCodeLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-accent-cyan/90 hover:bg-accent-cyan p-4 rounded-full text-black transition-all backdrop-blur-sm"
+                    whileHover={{ scale: 1.15 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <Github size={24} />
+                  </motion.a>
+                )}
                 <motion.button
                   className="bg-purple-500/90 hover:bg-purple-500 p-4 rounded-full text-white transition-all backdrop-blur-sm"
                   whileHover={{ scale: 1.15 }}
@@ -163,7 +165,17 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
 );
 
 const Projects = () => {
+  const { getAll, loading } = useFirestore('projects');
+  const [projects, setProjects] = useState<TProject[]>([]);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const data = await getAll();
+      setProjects(data as unknown as TProject[]);
+    };
+    fetchProjects();
+  }, [getAll]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -175,6 +187,8 @@ const Projects = () => {
       },
     },
   };
+
+  if (loading) return <div className="text-white text-center">Loading Projects...</div>;
 
   return (
     <motion.div
@@ -221,7 +235,7 @@ const Projects = () => {
 
       {/* Project Details Modal */}
       <AnimatePresence>
-        {selectedProject !== null && (
+        {selectedProject !== null && projects[selectedProject] && (
           <motion.div
             className="fixed inset-0 bg-black/95 backdrop-blur-xl z-[9999] flex items-center justify-center p-4 overflow-y-auto"
             initial={{ opacity: 0 }}

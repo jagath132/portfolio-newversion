@@ -1,9 +1,10 @@
 import { styles } from '../../constants/styles';
 import { SectionWrapper } from '../../hoc';
-import { educations } from '../../constants';
 import { Header } from '../atoms/Header';
 import { config } from '../../constants/config';
 import { TEducation } from '../../types';
+import { useFirestore } from '../../hooks/useFirestore';
+import { useState, useEffect } from 'react';
 
 const EducationCard: React.FC<{ index: number } & TEducation> = ({
   degree,
@@ -22,6 +23,19 @@ const EducationCard: React.FC<{ index: number } & TEducation> = ({
 );
 
 const Education = () => {
+  const { getAll, loading } = useFirestore('education');
+  const [educations, setEducations] = useState<TEducation[]>([]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const data = await getAll();
+      setEducations(data as unknown as TEducation[]);
+    };
+    fetch();
+  }, [getAll]);
+
+  if (loading) return null;
+
   return (
     <div className="mt-12 rounded-[20px]">
       <div className={`${styles.padding} glass-card min-h-[300px] rounded-2xl`}>
@@ -29,7 +43,7 @@ const Education = () => {
       </div>
       <div className={`${styles.paddingX} -mt-20 flex flex-wrap gap-7 pb-14 max-sm:justify-center`}>
         {educations.map((education, index) => (
-          <EducationCard key={education.name} index={index} {...education} />
+          <EducationCard key={education.degree || index} index={index} {...education} />
         ))}
       </div>
     </div>
