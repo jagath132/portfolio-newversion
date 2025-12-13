@@ -357,40 +357,40 @@ html {
 /* Utility classes for animations */
 .animate-gradient-shift {
   background-size: 200% 200%;
-  animation: gradient-shift 8s ease infinite;
+  animation: gradient-shift 5s ease infinite;
 }
 
 .animate-float {
-  animation: float 8s ease-in-out infinite;
+  animation: float 5s ease-in-out infinite;
 }
 
 .animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
+  animation: pulse-glow 2s ease-in-out infinite;
 }
 
 .animate-shimmer {
   background-size: 1000px 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 1.5s infinite;
 }
 
 .animate-slide-up {
-  animation: slide-up-fade 0.5s ease-out;
+  animation: slide-up-fade 0.3s ease-out;
 }
 
 .animate-glow {
-  animation: glow-animation 2s ease-in-out infinite;
+  animation: glow-animation 1.5s ease-in-out infinite;
 }
 
 .animate-bounce-subtle {
-  animation: bounce-subtle 1.5s ease-in-out infinite;
+  animation: bounce-subtle 1s ease-in-out infinite;
 }
 
 .animate-rotate-gradient {
-  animation: rotate-gradient 3s linear infinite;
+  animation: rotate-gradient 2s linear infinite;
 }
 
 .animate-move-gradient {
-  animation: move-gradient 6s ease infinite;
+  animation: move-gradient 4s ease infinite;
 }
 
 /* Footer-specific enhancements */
@@ -506,11 +506,11 @@ footer a[aria-label] {
 }
 
 .animate-card-hover {
-  animation: card-hover-glow 1.5s ease-in-out infinite;
+  animation: card-hover-glow 1s ease-in-out infinite;
 }
 
 .animate-border-glow {
-  animation: border-glow 2s ease-in-out infinite;
+  animation: border-glow 1.5s ease-in-out infinite;
 }
 
 .animate-scale-up {

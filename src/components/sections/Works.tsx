@@ -16,7 +16,7 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
         layout
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: index * 0.15 }}
+        transition={{ duration: 0.4, delay: index * 0.1 }}
         viewport={{ once: true }}
         className="w-full"
       >
@@ -26,7 +26,7 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
           onMouseLeave={() => setIsHovered(false)}
           className="relative group cursor-pointer"
           whileHover={{ x: 8 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
         >
           {/* Number Badge */}
           <motion.div
@@ -45,21 +45,21 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
                 alt={name}
                 className="w-full h-full object-cover"
                 animate={{ scale: isHovered ? 1.08 : 1 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.3 }}
               />
 
               {/* Dark Overlay */}
               <motion.div
                 className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20"
                 animate={{ opacity: isHovered ? 1 : 0.7 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
               />
 
               {/* Tech Stack Badges on Image */}
               <motion.div
                 className="absolute top-4 left-4 flex gap-2 flex-wrap"
                 animate={{ opacity: isHovered ? 1 : 0.6 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
               >
                 {tags.slice(0, 2).map(tag => (
                   <span
@@ -75,7 +75,7 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
               <motion.div
                 className="absolute inset-0 flex items-center justify-center gap-6"
                 animate={{ opacity: isHovered ? 1 : 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
               >
                 {sourceCodeLink && (
                   <motion.a
@@ -112,17 +112,17 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
                   ? 'rgba(255, 255, 255, 0.12)'
                   : 'rgba(255, 255, 255, 0.05)',
               }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.2 }}
             >
               <motion.h3
                 className="text-2xl font-bold text-white mb-2 flex items-center gap-2"
                 animate={{
                   color: isHovered ? '#00f2ea' : '#ffffff',
                 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
               >
                 <span>{name}</span>
-                <motion.span animate={{ x: isHovered ? 4 : 0 }} transition={{ duration: 0.3 }}>
+                <motion.span animate={{ x: isHovered ? 4 : 0 }} transition={{ duration: 0.2 }}>
                   <ArrowRight size={20} />
                 </motion.span>
               </motion.h3>
@@ -133,7 +133,7 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
               <motion.div
                 className="flex flex-wrap gap-2"
                 animate={{ opacity: isHovered ? 1 : 0.7 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
               >
                 {tags.map(tag => (
                   <span
@@ -156,7 +156,7 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
                 ? '0 0 20px rgba(0, 242, 234, 0.3)'
                 : '0 0 0px rgba(0, 242, 234, 0)',
             }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
           />
         </motion.div>
       </motion.div>
@@ -201,7 +201,7 @@ const Projects = () => {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.4 }}
         viewport={{ once: true }}
       >
         <Header {...config.sections.works} />
@@ -212,7 +212,7 @@ const Projects = () => {
         className="mt-8 max-w-3xl"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
         viewport={{ once: true }}
       >
         <p className="text-[17px] leading-[30px] text-secondary">{config.sections.works.content}</p>

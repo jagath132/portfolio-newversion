@@ -1,7 +1,7 @@
 import type { TMotion } from "../types";
 import { Variants } from "framer-motion";
 
-export const textVariant = () => {
+export const textVariant = (delay?: number) => {
   return {
     hidden: {
       y: -50,
@@ -12,7 +12,8 @@ export const textVariant = () => {
       opacity: 1,
       transition: {
         type: "spring",
-        duration: 1.25,
+        duration: 0.6,
+        delay: delay || 0,
       },
     },
   };
@@ -37,7 +38,7 @@ export const fadeIn = (
       transition: {
         type,
         delay,
-        duration,
+        duration: duration || 0.4,
         ease: "easeOut",
       },
     },
@@ -59,7 +60,7 @@ export const zoomIn = (
       transition: {
         type: "tween",
         delay,
-        duration,
+        duration: duration || 0.4,
         ease: "easeOut",
       },
     },
@@ -83,7 +84,7 @@ export const slideIn = (
       transition: {
         type,
         delay,
-        duration,
+        duration: duration || 0.4,
         ease: "easeOut",
       },
     },

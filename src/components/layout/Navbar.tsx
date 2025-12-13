@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
-import { styles } from '../../constants/styles';
 import { navLinks } from '../../constants';
 import { menu, close } from '../../assets';
-// import { config } from '../../constants/config';
 
 const Navbar = () => {
-  const [active, setActive] = useState<string | null>();
+  const [active, setActive] = useState<string | null>('');
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -18,15 +17,14 @@ const Navbar = () => {
         setScrolled(true);
       } else {
         setScrolled(false);
-        setActive('');
       }
     };
 
     window.addEventListener('scroll', handleScroll);
 
+    // Active Highlight Logic
     const navbarHighlighter = () => {
       const sections = document.querySelectorAll('section[id]');
-
       sections.forEach(current => {
         const sectionId = current.getAttribute('id');
         // @ts-ignore
@@ -49,65 +47,93 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`${styles.paddingX} fixed top-0 z-20 flex w-full items-center py-5 transition-all duration-300 ${scrolled ? 'glass-card py-3' : 'bg-transparent'
+      className={`fixed z-50 flex w-full items-center justify-center transition-all duration-100 ${scrolled ? 'top-0 py-3' : 'top-0 py-5 sm:top-4'
         }`}
     >
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
+      <div
+        className={`flex w-full max-w-7xl items-center justify-between mx-auto transition-all duration-100 ${scrolled
+          ? 'px-6 py-2 bg-black/40 backdrop-blur-xl border-b border-white/5 w-full rounded-none'
+          : 'px-6 py-3 bg-black/20 backdrop-blur-lg border border-white/10 w-[95%] sm:rounded-2xl shadow-lg shadow-black/20'
+          }`}
+      >
         <Link
           to="/"
           className="flex items-center gap-2"
           onClick={() => {
+            setActive('');
             window.scrollTo(0, 0);
           }}
         >
-          <div className="w-14 h-14 bg-gradient-to-br from-accent-cyan via-purple-500 to-accent-pink rounded-2xl flex items-center justify-center shadow-neon">
-            <span className="text-white font-display font-bold text-2xl tracking-wider">JR</span>
+          <div className="w-10 h-10 bg-gradient-to-br from-accent-cyan via-purple-500 to-accent-pink rounded-xl flex items-center justify-center shadow-lg shadow-accent-cyan/20">
+            <span className="text-white font-display font-bold text-lg tracking-wider">JR</span>
           </div>
         </Link>
 
-        <ul className="hidden list-none flex-row gap-10 sm:flex">
+        {/* Desktop Nav */}
+        <ul className="hidden sm:flex flex-row gap-8">
           {navLinks.map(nav => (
             <li
               key={nav.id}
-              className={`${active === nav.id
-                ? 'text-accent-cyan'
-                : 'text-secondary'
-                } cursor-pointer text-[18px] font-medium hover:text-white transition-all duration-300 font-display`}
+              className={`relative cursor-pointer text-[16px] font-medium transition-colors duration-100 font-display ${active === nav.id ? 'text-accent-cyan' : 'text-secondary hover:text-white'
+                }`}
             >
-              <a href={`#${nav.id}`}>{nav.title}</a>
+              <a href={`#${nav.id}`} className="relative z-10 px-2 py-1">
+                {nav.title}
+              </a>
+              {active === nav.id && (
+                <motion.div
+                  layoutId="activeNav"
+                  className="absolute bottom-[-4px] left-0 right-0 h-[3px] bg-gradient-to-r from-accent-cyan via-purple-500 to-accent-pink rounded-full shadow-lg shadow-accent-cyan/50"
+                  transition={{ type: "spring", bounce: 0.1, duration: 0.1 }}
+                />
+              )}
             </li>
           ))}
         </ul>
 
-        <div className="flex flex-1 items-center justify-end sm:hidden">
+        {/* Mobile Menu */}
+        <div className="sm:hidden flex flex-1 justify-end items-center">
           <img
             src={toggle ? close : menu}
             alt="menu"
-            className="h-[28px] w-[28px] object-contain"
+            className="w-[24px] h-[24px] object-contain cursor-pointer relative z-50 opacity-90 hover:opacity-100 transition-opacity"
             onClick={() => setToggle(!toggle)}
           />
 
-          <div
-            className={`${!toggle ? 'hidden' : 'flex'
-              } black-gradient absolute right-0 top-20 z-10 mx-4 my-2 min-w-[140px] rounded-xl p-6`}
-          >
-            <ul className="flex flex-1 list-none flex-col items-start justify-end gap-4">
-              {navLinks.map(nav => (
-                <li
-                  key={nav.id}
-                  className={`font-display cursor-pointer text-[16px] font-medium ${active === nav.id
-                    ? 'text-accent-cyan'
-                    : 'text-secondary'
-                    } transition-all duration-300`}
-                  onClick={() => {
-                    setToggle(!toggle);
-                  }}
-                >
-                  <a href={`#${nav.id}`}>{nav.title}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <AnimatePresence>
+            {toggle && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: -20, filter: "blur(10px)" }}
+                animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, scale: 0.95, y: -20, filter: "blur(10px)" }}
+                transition={{ duration: 0.1, type: "spring", bounce: 0.1 }}
+                className="absolute top-16 right-4 mx-4 my-2 min-w-[200px] z-40 rounded-2xl bg-black/80 backdrop-blur-2xl border border-white/10 shadow-2xl overflow-hidden"
+              >
+                <div className="p-6">
+                  <ul className="list-none flex justify-end items-start flex-col gap-4">
+                    {navLinks.map((nav, index) => (
+                      <motion.li
+                        key={nav.id}
+                        initial={{ x: 20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.03 * index }}
+                        className={`font-display font-medium cursor-pointer text-[18px] w-full ${active === nav.id ? 'text-accent-cyan' : 'text-secondary'
+                          }`}
+                        onClick={() => {
+                          setToggle(!toggle);
+                          setActive(nav.id);
+                        }}
+                      >
+                        <a href={`#${nav.id}`} className="block w-full py-2 px-4 hover:bg-white/5 rounded-lg transition-colors">
+                          {nav.title}
+                        </a>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </nav>

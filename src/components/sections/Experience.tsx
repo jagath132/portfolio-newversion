@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
 import { SectionWrapper } from '../../hoc';
 import { Header } from '../atoms/Header';
 import { TExperience } from '../../types';
 import { config } from '../../constants/config';
-import { useFirestore } from '../../hooks/useFirestore';
+import { experiences } from '../../constants';
 import { Briefcase } from 'lucide-react';
 
 const ExperienceCard: React.FC<TExperience> = experience => {
@@ -20,14 +20,14 @@ const ExperienceCard: React.FC<TExperience> = experience => {
       }}
       contentArrowStyle={{ borderRight: '7px solid  #232631' }}
       date={experience.date}
-      iconStyle={{ background: experience.iconBg }}
+      iconStyle={{ background: experience.iconBg, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       icon={
         <div className="flex h-full w-full items-center justify-center">
-          {experience.icon && experience.icon.startsWith('http') ? (
+          {experience.icon ? (
             <img
               src={experience.icon}
               alt={experience.companyName}
-              className="h-[60%] w-[60%] object-contain rounded-full"
+              className="h-[60%] w-[60%] object-contain"
             />
           ) : (
             <Briefcase className="text-white w-1/2 h-1/2" />
@@ -57,19 +57,6 @@ const ExperienceCard: React.FC<TExperience> = experience => {
 };
 
 const Experience = () => {
-  const { getAll, loading } = useFirestore('experience');
-  const [experiences, setExperiences] = useState<TExperience[]>([]);
-
-  useEffect(() => {
-    const fetch = async () => {
-      const data = await getAll();
-      setExperiences(data as unknown as TExperience[]);
-    };
-    fetch();
-  }, [getAll]);
-
-  if (loading) return null;
-
   return (
     <>
       <Header {...config.sections.experience} />

@@ -22,12 +22,9 @@ import {
   powerbi,
   tableau,
   excel,
-  mysql,
   zohoqengine,
   selenium,
-  powerapps,
   appium,
-  quadratic,
 } from '../assets';
 
 export const navLinks: TNavLink[] = [
@@ -48,15 +45,6 @@ const services: TService[] = [
 
 const skillCategories = [
   {
-    title: 'AI & Automation Tools',
-    technologies: [
-      { name: 'Quadratic.ai', icon: quadratic },
-      { name: 'UiPath', icon: uipath },
-      { name: 'Power Automate', icon: powerautomate },
-      { name: 'N8N', icon: n8n },
-    ],
-  },
-  {
     title: 'Programming Languages',
     technologies: [
       { name: 'Python', icon: python },
@@ -64,22 +52,37 @@ const skillCategories = [
     ],
   },
   {
-    title: 'Data & Analytics Tools',
+    title: 'Data Analytics',
     technologies: [
-      { name: 'Zoho Analytics', icon: zohoanalytics },
       { name: 'Power BI', icon: powerbi },
       { name: 'Tableau', icon: tableau },
       { name: 'Microsoft Excel', icon: excel },
-      { name: 'MySQL', icon: mysql },
+      { name: 'Zoho Analytics', icon: zohoanalytics },
+      { name: 'SQL', icon: sql },
+      { name: 'Python', icon: python },
     ],
   },
   {
-    title: 'Testing & Automation Tools',
+    title: 'Automation & Process Optimization',
     technologies: [
+      { name: 'Power Automate', icon: powerautomate },
+      { name: 'n8n', icon: n8n },
+    ],
+  },
+  {
+    title: 'Zoho Ecosystem',
+    technologies: [
+      { name: 'Zoho Creator', icon: creator },
+      { name: 'Zoho Analytics', icon: zohoanalytics },
       { name: 'Zoho QEngine', icon: zohoqengine },
+    ],
+  },
+  {
+    title: 'Testing & QA',
+    technologies: [
       { name: 'Selenium WebDriver', icon: selenium },
-      { name: 'Power Apps', icon: powerapps },
       { name: 'Appium', icon: appium },
+      { name: 'UiPath', icon: uipath },
     ],
   },
   {

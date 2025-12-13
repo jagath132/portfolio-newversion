@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { useFirestore } from '../../hooks/useFirestore';
 import { SectionWrapper } from '../../hoc';
 import { config } from '../../constants/config';
+import { skillCategories } from '../../constants';
 import { Header } from '../atoms/Header';
 
 interface SkillCardProps {
   name: string;
-  icon: string;
   index: number;
 }
 
@@ -15,25 +14,15 @@ interface CategoryProps {
   title: string;
   technologies: Array<{ name: string; icon: string }>;
   index: number;
+  isExpanded: boolean;
+  onToggle: () => void;
 }
 
-const SkillCard: React.FC<SkillCardProps> = ({ name, icon }) => {
+const SkillCard: React.FC<SkillCardProps> = ({ name }) => {
   return (
     <div className="group relative w-full">
       {/* Card Content */}
-      <div className="relative flex h-full flex-col items-center justify-center gap-4 rounded-xl border border-white/10 bg-gray-900/50 p-6 backdrop-blur-md transition-all duration-300 hover:border-accent-cyan/50 hover:bg-gray-900/80 hover:shadow-neon">
-        {/* Icon Container */}
-        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-white/10 to-white/5 p-3 shadow-inner ring-1 ring-white/10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
-          <img
-            src={icon}
-            alt={name}
-            className="h-10 w-10 object-contain drop-shadow-lg filter transition-all duration-300 group-hover:brightness-125"
-          />
-
-          {/* Glow effect behind icon */}
-          <div className="absolute inset-0 -z-10 rounded-2xl bg-purple-500/20 blur-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-        </div>
-
+      <div className="relative flex h-full flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-gray-900/50 p-4 transition-all duration-300 hover:border-accent-cyan/50 hover:bg-gray-900/80 hover:shadow-neon">
         {/* Skill Name */}
         <span className="text-center text-sm font-medium text-gray-300 transition-colors duration-300 group-hover:text-white">
           {name}
@@ -47,22 +36,17 @@ const SkillCard: React.FC<SkillCardProps> = ({ name, icon }) => {
   );
 };
 
-const SkillCategory: React.FC<CategoryProps> = ({ title, technologies }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
+const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, isExpanded, onToggle }) => {
   return (
     <div className="w-full overflow-hidden rounded-3xl border border-white/5 bg-black/20 backdrop-blur-sm">
       {/* Category Header */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="flex w-full items-center justify-between p-6 transition-colors hover:bg-white/5"
+        onClick={onToggle}
+        className="flex w-full items-center justify-between p-4 sm:p-6 transition-colors hover:bg-white/5"
       >
         <div className="flex items-center gap-4">
           <div className="h-8 w-1 rounded-full bg-gradient-to-b from-accent-cyan to-accent-pink" />
           <h3 className="text-xl font-bold text-white md:text-2xl">{title}</h3>
-          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/60">
-            {technologies.length}
-          </span>
         </div>
 
         <div
@@ -76,12 +60,11 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies }) => {
       {/* Skills Grid */}
       {isExpanded && (
         <div className="transition-all duration-400">
-          <div className="grid grid-cols-2 gap-4 p-6 pt-0 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 p-4 pt-0 sm:gap-4 sm:p-6 sm:pt-0 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
             {technologies.map((technology, idx) => (
               <SkillCard
                 key={technology.name}
                 name={technology.name}
-                icon={technology.icon}
                 index={idx}
               />
             ))}
@@ -93,34 +76,11 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies }) => {
 };
 
 const Tech = () => {
-  const { getAll, loading } = useFirestore('skills');
-  const [categories, setCategories] = useState<any[]>([]);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    const fetchSkills = async () => {
-      const skills = await getAll();
-
-      // Group skills by category
-      const grouped = skills.reduce((acc: any, skill: any) => {
-        const cat = skill.category || 'Other';
-        if (!acc[cat]) {
-          acc[cat] = [];
-        }
-        acc[cat].push(skill);
-        return acc;
-      }, {});
-
-      const catArray = Object.keys(grouped).map(key => ({
-        title: key,
-        technologies: grouped[key]
-      }));
-
-      setCategories(catArray);
-    };
-    fetchSkills();
-  }, [getAll]);
-
-  if (loading) return null;
+  const handleToggle = (index: number) => {
+    setExpandedIndex(prevIndex => (prevIndex === index ? null : index));
+  };
 
   return (
     <>
@@ -135,12 +95,14 @@ const Tech = () => {
       </div>
 
       <div className="mt-16 flex flex-col gap-8">
-        {categories.map((category, index) => (
+        {skillCategories.map((category, index) => (
           <SkillCategory
             key={category.title}
             title={category.title}
             technologies={category.technologies}
             index={index}
+            isExpanded={expandedIndex === index}
+            onToggle={() => handleToggle(index)}
           />
         ))}
       </div>
