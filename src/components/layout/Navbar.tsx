@@ -33,11 +33,21 @@ const Navbar = () => {
 
         if (sectionTop < 0 && sectionTop + sectionHeight > 0) {
           setActive(sectionId);
+          // Update URL hash without scrolling
+          if (window.location.hash !== `#${sectionId}`) {
+            window.history.replaceState(null, '', `#${sectionId}`);
+          }
         }
       });
     };
 
     window.addEventListener('scroll', navbarHighlighter);
+
+    // Set initial active state based on URL hash
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      setActive(hash);
+    }
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -77,7 +87,21 @@ const Navbar = () => {
               className={`relative cursor-pointer text-[16px] font-medium transition-colors duration-100 font-display ${active === nav.id ? 'text-accent-cyan' : 'text-secondary hover:text-white'
                 }`}
             >
-              <a href={`#${nav.id}`} className="relative z-10 px-2 py-1">
+              <a
+                href={`#${nav.id}`}
+                className="relative z-10 px-2 py-1"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActive(nav.id);
+                  const element = document.getElementById(nav.id);
+                  if (element) {
+                    const yOffset = -80; // Navbar height offset
+                    const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                    window.history.pushState(null, '', `#${nav.id}`);
+                  }
+                }}
+              >
                 {nav.title}
               </a>
               {active === nav.id && (
@@ -124,7 +148,20 @@ const Navbar = () => {
                           setActive(nav.id);
                         }}
                       >
-                        <a href={`#${nav.id}`} className="block w-full py-2 px-4 hover:bg-white/5 rounded-lg transition-colors">
+                        <a
+                          href={`#${nav.id}`}
+                          className="block w-full py-2 px-4 hover:bg-white/5 rounded-lg transition-colors"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            const element = document.getElementById(nav.id);
+                            if (element) {
+                              const yOffset = -80;
+                              const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                              window.scrollTo({ top: y, behavior: 'smooth' });
+                              window.history.pushState(null, '', `#${nav.id}`);
+                            }
+                          }}
+                        >
                           {nav.title}
                         </a>
                       </motion.li>

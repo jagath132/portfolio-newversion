@@ -20,7 +20,7 @@ interface CategoryProps {
 
 const SkillCard: React.FC<SkillCardProps> = ({ name }) => {
   return (
-    <div className="group relative w-full">
+    <div className="group relative w-full" role="listitem" aria-label={`Skill: ${name}`}>
       {/* Card Content */}
       <div className="relative flex h-full flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-gray-900/50 p-4 transition-all duration-300 hover:border-accent-cyan/50 hover:bg-gray-900/80 hover:shadow-neon">
         {/* Skill Name */}
@@ -29,8 +29,8 @@ const SkillCard: React.FC<SkillCardProps> = ({ name }) => {
         </span>
 
         {/* Decorative Corner Accents */}
-        <div className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-white/10 transition-colors duration-300 group-hover:bg-purple-500/50" />
-        <div className="absolute bottom-2 left-2 h-1.5 w-1.5 rounded-full bg-white/10 transition-colors duration-300 group-hover:bg-blue-500/50" />
+        <div className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-white/10 transition-colors duration-300 group-hover:bg-purple-500/50" aria-hidden="true" />
+        <div className="absolute bottom-2 left-2 h-1.5 w-1.5 rounded-full bg-white/10 transition-colors duration-300 group-hover:bg-blue-500/50" aria-hidden="true" />
       </div>
     </div>
   );
@@ -43,15 +43,19 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, isExpande
       <button
         onClick={onToggle}
         className="flex w-full items-center justify-between p-4 sm:p-6 transition-colors hover:bg-white/5"
+        aria-expanded={isExpanded}
+        aria-controls={`category-${title.replace(/\s+/g, '-').toLowerCase()}`}
+        aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${title} skills category`}
       >
         <div className="flex items-center gap-4">
-          <div className="h-8 w-1 rounded-full bg-gradient-to-b from-accent-cyan to-accent-pink" />
+          <div className="h-8 w-1 rounded-full bg-gradient-to-b from-accent-cyan to-accent-pink" aria-hidden="true" />
           <h3 className="text-xl font-bold text-white md:text-2xl">{title}</h3>
         </div>
 
         <div
           className="rounded-full bg-white/5 p-2 text-white/70 backdrop-blur-md transition-transform duration-300"
           style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+          aria-hidden="true"
         >
           <ChevronDown size={20} />
         </div>
@@ -59,7 +63,12 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, isExpande
 
       {/* Skills Grid */}
       {isExpanded && (
-        <div className="transition-all duration-400">
+        <div
+          className="transition-all duration-400"
+          id={`category-${title.replace(/\s+/g, '-').toLowerCase()}`}
+          role="list"
+          aria-label={`${title} technologies`}
+        >
           <div className="grid grid-cols-2 gap-3 p-4 pt-0 sm:gap-4 sm:p-6 sm:pt-0 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
             {technologies.map((technology, idx) => (
               <SkillCard

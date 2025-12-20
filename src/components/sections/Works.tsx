@@ -10,6 +10,7 @@ import { ExternalLink, Github, ArrowRight } from 'lucide-react';
 const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProject>(
   ({ index, name, description, tags, image, sourceCodeLink, onSelect }) => {
     const [isHovered, setIsHovered] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     return (
       <motion.div
@@ -32,6 +33,7 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
           <motion.div
             className="absolute -left-8 top-0 text-7xl font-bold text-accent-cyan/10 group-hover:text-accent-cyan/20 transition-colors duration-300"
             animate={{ opacity: isHovered ? 0.4 : 0.2 }}
+            aria-hidden="true"
           >
             {String(index + 1).padStart(2, '0')}
           </motion.div>
@@ -40,12 +42,19 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
           <div className="relative overflow-hidden rounded-2xl">
             {/* Image Section */}
             <motion.div className="relative h-[280px] overflow-hidden rounded-2xl">
+              {!imageLoaded && (
+                <div className="absolute inset-0 bg-gray-800 animate-pulse flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-cyan"></div>
+                </div>
+              )}
               <motion.img
                 src={image}
-                alt={name}
-                className="w-full h-full object-cover"
+                alt={`${name} project screenshot - ${description.substring(0, 100)}`}
+                className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
                 animate={{ scale: isHovered ? 1.08 : 1 }}
                 transition={{ duration: 0.3 }}
+                onLoad={() => setImageLoaded(true)}
+                loading="lazy"
               />
 
               {/* Dark Overlay */}
@@ -53,6 +62,7 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
                 className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20"
                 animate={{ opacity: isHovered ? 1 : 0.7 }}
                 transition={{ duration: 0.2 }}
+                aria-hidden="true"
               />
 
               {/* Tech Stack Badges on Image */}
@@ -60,6 +70,7 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
                 className="absolute top-4 left-4 flex gap-2 flex-wrap"
                 animate={{ opacity: isHovered ? 1 : 0.6 }}
                 transition={{ duration: 0.2 }}
+                aria-hidden="true"
               >
                 {tags.slice(0, 2).map(tag => (
                   <span
@@ -86,8 +97,9 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
                     whileHover={{ scale: 1.15 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={e => e.stopPropagation()}
+                    aria-label={`View ${name} source code on GitHub`}
                   >
-                    <Github size={24} />
+                    <Github size={24} aria-hidden="true" />
                   </motion.a>
                 )}
                 <motion.button
@@ -98,8 +110,9 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
                     e.stopPropagation();
                     onSelect();
                   }}
+                  aria-label={`View ${name} project details`}
                 >
-                  <ExternalLink size={24} />
+                  <ExternalLink size={24} aria-hidden="true" />
                 </motion.button>
               </motion.div>
             </motion.div>
@@ -253,6 +266,10 @@ const Projects = () => {
                 document.querySelector('nav')?.classList.add('hidden');
               }
             }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
           >
             <motion.div
               className="relative bg-gradient-to-br from-white/20 via-white/10 to-white/5 rounded-3xl p-12 max-w-5xl w-full border border-white/30 backdrop-blur-2xl shadow-2xl shadow-accent-cyan/40 my-12"
@@ -268,8 +285,9 @@ const Projects = () => {
                 className="absolute top-8 right-8 text-white/60 hover:text-accent-cyan transition-colors z-10 p-3 hover:bg-white/10 rounded-full"
                 whileHover={{ scale: 1.2, rotate: 90 }}
                 transition={{ duration: 0.2 }}
+                aria-label="Close project details modal"
               >
-                <span className="text-3xl font-light">✕</span>
+                <span className="text-3xl font-light" aria-hidden="true">✕</span>
               </motion.button>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -284,10 +302,10 @@ const Projects = () => {
                   <div className="relative h-[450px]">
                     <img
                       src={projects[selectedProject].image}
-                      alt={projects[selectedProject].name}
+                      alt={`${projects[selectedProject].name} project detailed screenshot showing ${projects[selectedProject].description}`}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" aria-hidden="true" />
                   </div>
                 </motion.div>
 
@@ -301,6 +319,7 @@ const Projects = () => {
                   {/* Title & Description */}
                   <div>
                     <motion.h2
+                      id="modal-title"
                       className="text-5xl font-bold text-white mb-4"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -309,6 +328,7 @@ const Projects = () => {
                       {projects[selectedProject].name}
                     </motion.h2>
                     <motion.p
+                      id="modal-description"
                       className="text-secondary/90 text-lg leading-relaxed"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}

@@ -106,13 +106,35 @@ const Hero = () => {
         >
           <a
             href="#projects"
+            onClick={(e) => {
+              e.preventDefault();
+              const element = document.getElementById('projects');
+              if (element) {
+                const yOffset = -80;
+                const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+                window.history.pushState(null, '', '#projects');
+              }
+            }}
             className="px-8 py-4 bg-gradient-to-r from-accent-cyan to-[#0072ff] rounded-xl font-bold text-white shadow-lg shadow-accent-cyan/25 hover:shadow-accent-cyan/40 hover:scale-105 transition-all duration-300"
+            aria-label="View my projects"
           >
             View My Work
           </a>
           <a
             href="#contact"
+            onClick={(e) => {
+              e.preventDefault();
+              const element = document.getElementById('contact');
+              if (element) {
+                const yOffset = -80;
+                const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+                window.history.pushState(null, '', '#contact');
+              }
+            }}
             className="px-8 py-4 glass-card border border-white/10 rounded-xl font-medium text-white hover:bg-white/10 hover:border-white/20 hover:scale-105 transition-all duration-300"
+            aria-label="Contact me"
           >
             Contact Me
           </a>

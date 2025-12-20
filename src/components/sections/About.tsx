@@ -11,17 +11,34 @@ interface IServiceCard {
   icon: string;
 }
 
-const ServiceCard: React.FC<IServiceCard> = ({ title, icon }) => (
-  <div className="max-w-[250px] w-full xs:w-[250px]">
-    <div className="glass-card w-full rounded-[20px] p-[1px]">
-      <div className="bg-transparent flex min-h-[280px] flex-col items-center justify-evenly rounded-[20px] px-12 py-5">
-        <img src={icon} alt="web-development" className="h-16 w-16 object-contain" />
+const ServiceCard: React.FC<IServiceCard> = ({ title, icon }) => {
+  const [imageLoaded, setImageLoaded] = React.useState(false);
 
-        <h3 className="text-center text-[20px] font-bold text-white">{title}</h3>
+  return (
+    <div className="max-w-[250px] w-full xs:w-[250px]">
+      <div className="glass-card w-full rounded-[20px] p-[1px]">
+        <div className="bg-transparent flex min-h-[280px] flex-col items-center justify-evenly rounded-[20px] px-12 py-5">
+          <div className="relative h-16 w-16">
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-cyan"></div>
+              </div>
+            )}
+            <img
+              src={icon}
+              alt={`${title} service icon`}
+              className={`h-16 w-16 object-contain transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setImageLoaded(true)}
+              loading="lazy"
+            />
+          </div>
+
+          <h3 className="text-center text-[20px] font-bold text-white">{title}</h3>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const About = () => {
   return (

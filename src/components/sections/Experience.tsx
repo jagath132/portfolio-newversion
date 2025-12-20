@@ -22,15 +22,15 @@ const ExperienceCard: React.FC<TExperience> = experience => {
       date={experience.date}
       iconStyle={{ background: experience.iconBg, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       icon={
-        <div className="flex h-full w-full items-center justify-center">
+        <div className="flex h-full w-full items-center justify-center" role="img" aria-label={`${experience.companyName} logo`}>
           {experience.icon ? (
             <img
               src={experience.icon}
-              alt={experience.companyName}
+              alt={`${experience.companyName} company logo`}
               className="h-[60%] w-[60%] object-contain"
             />
           ) : (
-            <Briefcase className="text-white w-1/2 h-1/2" />
+            <Briefcase className="text-white w-1/2 h-1/2" aria-label="Work experience icon" />
           )}
         </div>
       }
