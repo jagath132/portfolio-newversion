@@ -1,0 +1,360 @@
+{
+    "info": {
+        "name": "Portfolio API Testing Collection",
+        "description": "Complete API testing collection for Portfolio application",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "portfolio-testing"
+    },
+    "item": [
+        {
+            "name": "Contact Form API",
+            "item": [
+                {
+                    "name": "Submit Contact Form - Success",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "access_key",
+                                    "value": "{{WEB3FORMS_ACCESS_KEY}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "Test User",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "test@example.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "message",
+                                    "value": "This is a test message from Postman API testing",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "https://api.web3forms.com/submit",
+                            "protocol": "https",
+                            "host": [
+                                "api",
+                                "web3forms",
+                                "com"
+                            ],
+                            "path": [
+                                "submit"
+                            ]
+                        },
+                        "description": "Test successful contact form submission with all required fields"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Submit Contact Form - Missing Email",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "access_key",
+                                    "value": "{{WEB3FORMS_ACCESS_KEY}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "Test User",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "message",
+                                    "value": "Test message without email",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "https://api.web3forms.com/submit",
+                            "protocol": "https",
+                            "host": [
+                                "api",
+                                "web3forms",
+                                "com"
+                            ],
+                            "path": [
+                                "submit"
+                            ]
+                        },
+                        "description": "Test form submission with missing email field - should fail"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Submit Contact Form - Invalid Access Key",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "access_key",
+                                    "value": "INVALID_KEY_12345",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "Test User",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "test@example.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "message",
+                                    "value": "Test message",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "https://api.web3forms.com/submit",
+                            "protocol": "https",
+                            "host": [
+                                "api",
+                                "web3forms",
+                                "com"
+                            ],
+                            "path": [
+                                "submit"
+                            ]
+                        },
+                        "description": "Test with invalid access key - should return 400 error"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Firebase Authentication",
+            "item": [
+                {
+                    "name": "Sign Up - Create Account",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"{{TEST_EMAIL}}\",\n  \"password\": \"{{TEST_PASSWORD}}\",\n  \"returnSecureToken\": true\n}"
+                        },
+                        "url": {
+                            "raw": "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={{FIREBASE_API_KEY}}",
+                            "protocol": "https",
+                            "host": [
+                                "identitytoolkit",
+                                "googleapis",
+                                "com"
+                            ],
+                            "path": [
+                                "v1",
+                                "accounts:signUp"
+                            ],
+                            "query": [
+                                {
+                                    "key": "key",
+                                    "value": "{{FIREBASE_API_KEY}}"
+                                }
+                            ]
+                        },
+                        "description": "Create a new user account"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Sign In - Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"{{TEST_EMAIL}}\",\n  \"password\": \"{{TEST_PASSWORD}}\",\n  \"returnSecureToken\": true\n}"
+                        },
+                        "url": {
+                            "raw": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={{FIREBASE_API_KEY}}",
+                            "protocol": "https",
+                            "host": [
+                                "identitytoolkit",
+                                "googleapis",
+                                "com"
+                            ],
+                            "path": [
+                                "v1",
+                                "accounts:signInWithPassword"
+                            ],
+                            "query": [
+                                {
+                                    "key": "key",
+                                    "value": "{{FIREBASE_API_KEY}}"
+                                }
+                            ]
+                        },
+                        "description": "Sign in with email and password"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Sign In - Invalid Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"{{TEST_EMAIL}}\",\n  \"password\": \"WrongPassword123\",\n  \"returnSecureToken\": true\n}"
+                        },
+                        "url": {
+                            "raw": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={{FIREBASE_API_KEY}}",
+                            "protocol": "https",
+                            "host": [
+                                "identitytoolkit",
+                                "googleapis",
+                                "com"
+                            ],
+                            "path": [
+                                "v1",
+                                "accounts:signInWithPassword"
+                            ],
+                            "query": [
+                                {
+                                    "key": "key",
+                                    "value": "{{FIREBASE_API_KEY}}"
+                                }
+                            ]
+                        },
+                        "description": "Test login with incorrect password - should fail"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Local Development",
+            "item": [
+                {
+                    "name": "Health Check - Portfolio Home",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{BASE_URL}}/",
+                            "host": [
+                                "{{BASE_URL}}"
+                            ],
+                            "path": [
+                                ""
+                            ]
+                        },
+                        "description": "Check if the portfolio application is running"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Admin Login Page",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{BASE_URL}}/login",
+                            "host": [
+                                "{{BASE_URL}}"
+                            ],
+                            "path": [
+                                "login"
+                            ]
+                        },
+                        "description": "Access admin login page"
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Set timestamp for unique test data",
+                    "pm.environment.set('timestamp', new Date().getTime());"
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    "// Common test assertions",
+                    "pm.test('Response time is less than 2000ms', function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                    "});",
+                    "",
+                    "pm.test('Status code is valid', function () {",
+                    "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 400, 401, 404]);",
+                    "});"
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "BASE_URL",
+            "value": "http://localhost:5173",
+            "type": "string"
+        },
+        {
+            "key": "WEB3FORMS_ACCESS_KEY",
+            "value": "YOUR_WEB3FORMS_ACCESS_KEY",
+            "type": "string"
+        },
+        {
+            "key": "FIREBASE_API_KEY",
+            "value": "YOUR_FIREBASE_API_KEY",
+            "type": "string"
+        },
+        {
+            "key": "TEST_EMAIL",
+            "value": "test@example.com",
+            "type": "string"
+        },
+        {
+            "key": "TEST_PASSWORD",
+            "value": "TestPassword123",
+            "type": "string"
+        }
+    ]
+}
