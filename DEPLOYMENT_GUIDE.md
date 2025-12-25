@@ -56,6 +56,7 @@ This creates a production build with:
 4. Add environment variables:
    ```
    VITE_APP_MODE=portfolio
+   VITE_WEB3FORMS_ACCESS_KEY=your_web3forms_key
    VITE_FIREBASE_API_KEY=your_api_key
    VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
    VITE_FIREBASE_PROJECT_ID=your_project_id
@@ -140,6 +141,7 @@ Both deployments need these Firebase configuration variables:
 - `VITE_FIREBASE_STORAGE_BUCKET`
 - `VITE_FIREBASE_MESSAGING_SENDER_ID`
 - `VITE_FIREBASE_APP_ID`
+- `VITE_WEB3FORMS_ACCESS_KEY` (Portfolio only)
 
 **IMPORTANT**: Set `VITE_APP_MODE` to:
 - `admin` for admin console deployment

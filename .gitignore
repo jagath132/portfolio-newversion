@@ -28,6 +28,8 @@ dist-ssr
 
 # env
 .env
+.env.portfolio
+.env.admin
 
 
 
