@@ -23,16 +23,12 @@ const EducationCard: React.FC<{ index: number } & TEducation> = ({
 );
 
 const Education = () => {
-  const { getAll, loading } = useFirestore('education');
+  const { getAll, useRealtime, loading } = useFirestore('education');
   const [educations, setEducations] = useState<TEducation[]>([]);
 
-  useEffect(() => {
-    const fetch = async () => {
-      const data = await getAll();
-      setEducations(data as unknown as TEducation[]);
-    };
-    fetch();
-  }, [getAll]);
+  useRealtime(data => {
+    setEducations(data as unknown as TEducation[]);
+  });
 
   if (loading) return null;
 

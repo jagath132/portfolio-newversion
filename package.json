@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:admin": "cross-env VITE_APP_MODE=admin vite",
+    "dev:portfolio": "vite",
     "build": "tsc && vite build",
     "build:admin": "tsc && vite build --mode admin",
     "build:portfolio": "tsc && vite build --mode portfolio",
@@ -38,6 +40,7 @@
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.13",
+    "cross-env": "^10.1.0",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react-hooks": "^4.6.0",

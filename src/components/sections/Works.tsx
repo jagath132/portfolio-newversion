@@ -50,7 +50,9 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
               <motion.img
                 src={image}
                 alt={`${name} project screenshot - ${description.substring(0, 100)}`}
-                className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                className={`w-full h-full object-cover transition-opacity duration-300 ${
+                  imageLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
                 animate={{ scale: isHovered ? 1.08 : 1 }}
                 transition={{ duration: 0.3 }}
                 onLoad={() => setImageLoaded(true)}
@@ -178,17 +180,13 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
 );
 
 const Projects = () => {
-  const { getAll, loading } = useFirestore('projects');
+  const { getAll, useRealtime, loading } = useFirestore('projects');
   const [projects, setProjects] = useState<TProject[]>([]);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const data = await getAll();
-      setProjects(data as unknown as TProject[]);
-    };
-    fetchProjects();
-  }, [getAll]);
+  useRealtime(data => {
+    setProjects(data as unknown as TProject[]);
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -287,7 +285,9 @@ const Projects = () => {
                 transition={{ duration: 0.2 }}
                 aria-label="Close project details modal"
               >
-                <span className="text-3xl font-light" aria-hidden="true">✕</span>
+                <span className="text-3xl font-light" aria-hidden="true">
+                  ✕
+                </span>
               </motion.button>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -305,7 +305,10 @@ const Projects = () => {
                       alt={`${projects[selectedProject].name} project detailed screenshot showing ${projects[selectedProject].description}`}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" aria-hidden="true" />
+                    <div
+                      className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"
+                      aria-hidden="true"
+                    />
                   </div>
                 </motion.div>
 
