@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SectionWrapper } from '../../hoc';
 import { useFirestore } from '../../hooks/useFirestore';
@@ -180,7 +180,7 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
 );
 
 const Projects = () => {
-  const { getAll, useRealtime, loading } = useFirestore('projects');
+  const { useRealtime, loading } = useFirestore('projects');
   const [projects, setProjects] = useState<TProject[]>([]);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
 

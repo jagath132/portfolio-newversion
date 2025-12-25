@@ -4,7 +4,7 @@ import { Header } from '../atoms/Header';
 import { config } from '../../constants/config';
 import { TEducation } from '../../types';
 import { useFirestore } from '../../hooks/useFirestore';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const EducationCard: React.FC<{ index: number } & TEducation> = ({
   degree,
@@ -23,7 +23,7 @@ const EducationCard: React.FC<{ index: number } & TEducation> = ({
 );
 
 const Education = () => {
-  const { getAll, useRealtime, loading } = useFirestore('education');
+  const { useRealtime, loading } = useFirestore('education');
   const [educations, setEducations] = useState<TEducation[]>([]);
 
   useRealtime(data => {
