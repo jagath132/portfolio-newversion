@@ -10,7 +10,7 @@ interface EducationForm {
     degree: string;
     year: string;
     type: string;
-    details: string;
+    description: string;
 }
 
 const EducationManager = () => {
@@ -54,7 +54,7 @@ const EducationManager = () => {
         setValue('degree', edu.degree);
         setValue('year', edu.year);
         setValue('type', edu.type || 'education');
-        setValue('details', edu.details);
+        setValue('description', edu.description);
         setIsModalOpen(true);
     };
 
@@ -123,7 +123,7 @@ const EducationManager = () => {
                             </div>
                         </div>
 
-                        <p className="text-gray-400 text-sm mb-6 flex-1 relative z-10">{edu.details}</p>
+                        <p className="text-gray-400 text-sm mb-6 flex-1 relative z-10">{edu.description}</p>
 
                         <div className="flex gap-2 pt-4 border-t border-[#2b2b42] relative z-10 mt-auto">
                             <button
@@ -195,9 +195,9 @@ const EducationManager = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Details / Description</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">Description / Details</label>
                         <textarea
-                            {...register('details')}
+                            {...register('description')}
                             rows={3}
                             className="w-full bg-[#1d1836] text-white px-4 py-3 rounded-lg border border-[#2b2b42] focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder-gray-500"
                             placeholder="Score, honors, or brief stats..."

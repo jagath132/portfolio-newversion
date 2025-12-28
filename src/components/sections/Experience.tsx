@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
 import { SectionWrapper } from '../../hoc';
 import { Header } from '../atoms/Header';
 import { TExperience } from '../../types';
 import { config } from '../../constants/config';
-import { experiences } from '../../constants';
+import { useFirestore } from '../../hooks/useFirestore';
 import { Briefcase } from 'lucide-react';
 
 const ExperienceCard: React.FC<TExperience> = experience => {
@@ -20,7 +20,7 @@ const ExperienceCard: React.FC<TExperience> = experience => {
       }}
       contentArrowStyle={{ borderRight: '7px solid  #232631' }}
       date={experience.date}
-      iconStyle={{ background: experience.iconBg, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      iconStyle={{ background: experience.iconBg || '#383E56', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       icon={
         <div className="flex h-full w-full items-center justify-center" role="img" aria-label={`${experience.companyName} logo`}>
           {experience.icon ? (
@@ -57,14 +57,21 @@ const ExperienceCard: React.FC<TExperience> = experience => {
 };
 
 const Experience = () => {
+  const { useRealtime } = useFirestore('experience');
+  const [experienceList, setExperienceList] = useState<any[]>([]);
+
+  useRealtime((data) => {
+    setExperienceList(data);
+  });
+
   return (
     <>
       <Header {...config.sections.experience} />
 
       <div className="mt-20 flex flex-col">
         <VerticalTimeline>
-          {experiences.map((experience, index) => (
-            <ExperienceCard key={index} {...experience} />
+          {experienceList.map((experience, index) => (
+            <ExperienceCard key={experience.id || index} {...experience} />
           ))}
         </VerticalTimeline>
       </div>

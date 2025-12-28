@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { SectionWrapper } from '../../hoc';
 import { config } from '../../constants/config';
-import { skillCategories } from '../../constants';
 import { Header } from '../atoms/Header';
+import { useFirestore } from '../../hooks/useFirestore';
 
 interface SkillCardProps {
   name: string;
   index: number;
+  icon?: string;
 }
 
 interface CategoryProps {
@@ -18,11 +19,18 @@ interface CategoryProps {
   onToggle: () => void;
 }
 
-const SkillCard: React.FC<SkillCardProps> = ({ name }) => {
+const SkillCard: React.FC<SkillCardProps> = ({ name, icon }) => {
   return (
     <div className="group relative w-full" role="listitem" aria-label={`Skill: ${name}`}>
       {/* Card Content */}
       <div className="relative flex h-full flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-gray-900/50 p-4 transition-all duration-300 hover:border-accent-cyan/50 hover:bg-gray-900/80 hover:shadow-neon">
+        {/* Icon (if available) */}
+        {icon && (
+          <div className="mb-2 h-10 w-10">
+            <img src={icon} alt={`${name} icon`} className="h-full w-full object-contain" />
+          </div>
+        )}
+
         {/* Skill Name */}
         <span className="text-center text-sm font-medium text-gray-300 transition-colors duration-300 group-hover:text-white">
           {name}
@@ -50,6 +58,7 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, isExpande
         <div className="flex items-center gap-4">
           <div className="h-8 w-1 rounded-full bg-gradient-to-b from-accent-cyan to-accent-pink" aria-hidden="true" />
           <h3 className="text-xl font-bold text-white md:text-2xl">{title}</h3>
+          <span className="text-sm text-gray-500 font-mono">({technologies.length})</span>
         </div>
 
         <div
@@ -74,6 +83,7 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, isExpande
               <SkillCard
                 key={technology.name}
                 name={technology.name}
+                icon={technology.icon}
                 index={idx}
               />
             ))}
@@ -86,6 +96,47 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, isExpande
 
 const Tech = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const { useRealtime } = useFirestore('skills');
+  const [skillCategories, setSkillCategories] = useState<Array<{ title: string; technologies: any[] }>>([]);
+
+  useRealtime((data) => {
+    const grouped: Record<string, any[]> = {};
+
+    data.forEach((skill) => {
+      const category = skill.category || 'Other';
+      if (!grouped[category]) {
+        grouped[category] = [];
+      }
+      grouped[category].push(skill);
+    });
+
+    // Define preferred order if needed, otherwise just sort alphabetical or use valid preset categories
+    // Matches admin panel categories
+    const PRESET_ORDER = [
+      'AI & Automation Tools',
+      'Programming Languages',
+      'Data & Analytics Tools',
+      'Testing & Automation Tools',
+      'Version Control & Development',
+      'Other'
+    ];
+
+    const sortedCategories = Object.keys(grouped)
+      .sort((a, b) => {
+        const indexA = PRESET_ORDER.indexOf(a);
+        const indexB = PRESET_ORDER.indexOf(b);
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+        return a.localeCompare(b);
+      })
+      .map(title => ({
+        title,
+        technologies: grouped[title]
+      }));
+
+    setSkillCategories(sortedCategories);
+  });
 
   const handleToggle = (index: number) => {
     setExpandedIndex(prevIndex => (prevIndex === index ? null : index));
@@ -114,6 +165,11 @@ const Tech = () => {
             onToggle={() => handleToggle(index)}
           />
         ))}
+        {skillCategories.length === 0 && (
+          <div className="text-center text-gray-500 py-10">
+            No skills added yet. Add them in the Admin Panel.
+          </div>
+        )}
       </div>
     </>
   );

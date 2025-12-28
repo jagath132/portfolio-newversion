@@ -10,7 +10,6 @@ interface ExperienceForm {
     companyName: string;
     date: string;
     points: string; // Text area for points, split by newline
-    iconBg: string;
 }
 
 const ExperienceManager = () => {
@@ -61,7 +60,7 @@ const ExperienceManager = () => {
         setValue('title', exp.title);
         setValue('companyName', exp.companyName);
         setValue('date', exp.date);
-        setValue('iconBg', exp.iconBg);
+        setValue('date', exp.date);
         setValue('points', Array.isArray(exp.points) ? exp.points.join('\n') : exp.points);
         setIsModalOpen(true);
     };
@@ -180,15 +179,7 @@ const ExperienceManager = () => {
                         </div>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Background Color (Hex)</label>
-                        <input
-                            {...register('iconBg')}
-                            defaultValue="#383E56"
-                            className="w-full bg-[#1d1836] text-white px-4 py-3 rounded-lg border border-[#2b2b42] focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder-gray-500"
-                            placeholder="#383E56"
-                        />
-                    </div>
+
 
                     <div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">Responsibilties (One per line)</label>

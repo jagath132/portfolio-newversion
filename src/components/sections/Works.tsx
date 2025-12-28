@@ -8,7 +8,7 @@ import { TProject } from '../../types';
 import { ExternalLink, Github, ArrowRight } from 'lucide-react';
 
 const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProject>(
-  ({ index, name, description, tags, image, sourceCodeLink, onSelect }) => {
+  ({ index, name, description, tags, image, sourceCodeLink, demoLink, onSelect }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -50,9 +50,8 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
               <motion.img
                 src={image}
                 alt={`${name} project screenshot - ${description.substring(0, 100)}`}
-                className={`w-full h-full object-cover transition-opacity duration-300 ${
-                  imageLoaded ? 'opacity-100' : 'opacity-0'
-                }`}
+                className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'
+                  }`}
                 animate={{ scale: isHovered ? 1.08 : 1 }}
                 transition={{ duration: 0.3 }}
                 onLoad={() => setImageLoaded(true)}
@@ -102,6 +101,20 @@ const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProjec
                     aria-label={`View ${name} source code on GitHub`}
                   >
                     <Github size={24} aria-hidden="true" />
+                  </motion.a>
+                )}
+                {demoLink && (
+                  <motion.a
+                    href={demoLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-purple-500/90 hover:bg-purple-500 p-4 rounded-full text-white transition-all backdrop-blur-sm"
+                    whileHover={{ scale: 1.15 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={e => e.stopPropagation()}
+                    aria-label={`View ${name} live demo`}
+                  >
+                    <ExternalLink size={24} aria-hidden="true" />
                   </motion.a>
                 )}
                 <motion.button
@@ -385,6 +398,22 @@ const Projects = () => {
                       className="group-hover:translate-x-2 transition-transform"
                     />
                   </motion.a>
+                  {projects[selectedProject].demoLink && (
+                    <motion.a
+                      href={projects[selectedProject].demoLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:shadow-2xl hover:shadow-purple-500/60 text-white/90 px-8 py-4 rounded-xl font-bold transition-all border border-purple-500/40 group text-lg"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.45 }}
+                      whileHover={{ scale: 1.08, y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <ExternalLink size={24} className="group-hover:rotate-12 transition-transform" />
+                      <span>Live Demo</span>
+                    </motion.a>
+                  )}
                 </motion.div>
               </div>
             </motion.div>

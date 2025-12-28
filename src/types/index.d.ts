@@ -6,7 +6,7 @@ export type TCommonProps = {
 
 export type TExperience = {
   companyName: string;
-  iconBg: string;
+  iconBg?: string;
   date: string;
   points: string[];
 } & Required<Omit<TCommonProps, 'name'>>;
@@ -33,6 +33,7 @@ export type TProject = {
   }[];
   image: string;
   sourceCodeLink: string;
+  demoLink?: string;
 } & Required<Pick<TCommonProps, 'name'>>;
 
 export type TTechnology = Required<Omit<TCommonProps, 'title'>>;
