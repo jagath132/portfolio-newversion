@@ -32,15 +32,7 @@ const ExperienceCard: React.FC<{
         borderRight: '7px solid rgba(255, 255, 255, 0.1)',
         filter: 'drop-shadow(0 0 10px rgba(0, 242, 234, 0.2))',
       }}
-      date={
-        <motion.span
-          className="text-accent-cyan font-semibold text-sm"
-          animate={{ color: isHovered ? '#00f2ea' : '#00f2ea' }}
-          transition={{ duration: 0.2 }}
-        >
-          {experience.date}
-        </motion.span>
-      }
+      date={experience.date}
       iconStyle={{
         background: isHovered
           ? 'linear-gradient(135deg, #00f2ea, #8b5cf6)'
@@ -199,7 +191,7 @@ const Experience = () => {
 
       <div className="mt-20">
         <VerticalTimeline lineColor="rgba(0, 242, 234, 0.3)" className="custom-timeline">
-          {experienceList.map((experience) => (
+          {experienceList.map((experience, index) => (
             <ExperienceCard
               key={experience.id || index}
               experience={experience}
