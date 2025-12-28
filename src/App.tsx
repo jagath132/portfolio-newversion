@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes, Navigate, useNavigate } from 'react-route
 import { Suspense, lazy, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Analytics } from '@vercel/analytics/react';
 
 import { Navbar, StarsCanvas, Footer } from './components';
 import { config } from './constants/config';
@@ -34,7 +35,10 @@ const PortfolioLayout = () => {
   useEffect(() => {
     const checkReload = () => {
       const navEntries = performance.getEntriesByType('navigation');
-      if (navEntries.length > 0 && (navEntries[0] as PerformanceNavigationTiming).type === 'reload') {
+      if (
+        navEntries.length > 0 &&
+        (navEntries[0] as PerformanceNavigationTiming).type === 'reload'
+      ) {
         navigate('/');
       }
     };
@@ -119,6 +123,7 @@ const App = () => {
           )}
         </Routes>
         <ToastContainer position="bottom-right" theme="dark" />
+        <Analytics />
       </BrowserRouter>
     </AuthProvider>
   );
