@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { navLinks } from '../../constants';
@@ -9,6 +9,7 @@ const Navbar = () => {
   const [active, setActive] = useState<string | null>('');
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,6 +55,13 @@ const Navbar = () => {
       window.removeEventListener('scroll', navbarHighlighter);
     };
   }, []);
+
+  useEffect(() => {
+    if (!location.hash) {
+      setActive('');
+      window.scrollTo(0, 0);
+    }
+  }, [location]);
 
   return (
     <nav

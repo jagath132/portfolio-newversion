@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import { Suspense, lazy, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -28,39 +28,52 @@ const LoadingFallback = () => (
   </div>
 );
 
-// Main Portfolio Layout
-const PortfolioLayout = () => (
-  <div className="bg-primary relative z-0">
-    <div className="bg-hero-pattern bg-cover bg-center bg-no-repeat">
-      <Navbar />
+const PortfolioLayout = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkReload = () => {
+      const navEntries = performance.getEntriesByType('navigation');
+      if (navEntries.length > 0 && (navEntries[0] as PerformanceNavigationTiming).type === 'reload') {
+        navigate('/');
+      }
+    };
+    checkReload();
+  }, [navigate]);
+
+  return (
+    <div className="bg-primary relative z-0">
+      <div className="bg-hero-pattern bg-cover bg-center bg-no-repeat">
+        <Navbar />
+        <Suspense fallback={<LoadingFallback />}>
+          <Hero />
+        </Suspense>
+      </div>
       <Suspense fallback={<LoadingFallback />}>
-        <Hero />
+        <About />
       </Suspense>
-    </div>
-    <Suspense fallback={<LoadingFallback />}>
-      <About />
-    </Suspense>
-    <Suspense fallback={<LoadingFallback />}>
-      <Education />
-    </Suspense>
-    <Suspense fallback={<LoadingFallback />}>
-      <Tech />
-    </Suspense>
-    <Suspense fallback={<LoadingFallback />}>
-      <Experience />
-    </Suspense>
-    <Suspense fallback={<LoadingFallback />}>
-      <Projects />
-    </Suspense>
-    <div className="relative z-0">
       <Suspense fallback={<LoadingFallback />}>
-        <Contact />
+        <Education />
       </Suspense>
-      <StarsCanvas />
+      <Suspense fallback={<LoadingFallback />}>
+        <Tech />
+      </Suspense>
+      <Suspense fallback={<LoadingFallback />}>
+        <Experience />
+      </Suspense>
+      <Suspense fallback={<LoadingFallback />}>
+        <Projects />
+      </Suspense>
+      <div className="relative z-0">
+        <Suspense fallback={<LoadingFallback />}>
+          <Contact />
+        </Suspense>
+        <StarsCanvas />
+      </div>
+      <Footer />
     </div>
-    <Footer />
-  </div>
-);
+  );
+};
 
 import ExperienceManager from './admin/pages/ExperienceManager';
 import SkillsManager from './admin/pages/SkillsManager';

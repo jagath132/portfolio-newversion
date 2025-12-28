@@ -8,7 +8,6 @@ import { useFirestore } from '../../hooks/useFirestore';
 interface SkillCardProps {
   name: string;
   index: number;
-  icon?: string;
 }
 
 interface CategoryProps {
@@ -19,17 +18,13 @@ interface CategoryProps {
   onToggle: () => void;
 }
 
-const SkillCard: React.FC<SkillCardProps> = ({ name, icon }) => {
+const SkillCard: React.FC<SkillCardProps> = ({ name }) => {
   return (
     <div className="group relative w-full" role="listitem" aria-label={`Skill: ${name}`}>
       {/* Card Content */}
       <div className="relative flex h-full flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-gray-900/50 p-4 transition-all duration-300 hover:border-accent-cyan/50 hover:bg-gray-900/80 hover:shadow-neon">
         {/* Icon (if available) */}
-        {icon && (
-          <div className="mb-2 h-10 w-10">
-            <img src={icon} alt={`${name} icon`} className="h-full w-full object-contain" />
-          </div>
-        )}
+
 
         {/* Skill Name */}
         <span className="text-center text-sm font-medium text-gray-300 transition-colors duration-300 group-hover:text-white">
@@ -58,7 +53,6 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, isExpande
         <div className="flex items-center gap-4">
           <div className="h-8 w-1 rounded-full bg-gradient-to-b from-accent-cyan to-accent-pink" aria-hidden="true" />
           <h3 className="text-xl font-bold text-white md:text-2xl">{title}</h3>
-          <span className="text-sm text-gray-500 font-mono">({technologies.length})</span>
         </div>
 
         <div
@@ -83,7 +77,6 @@ const SkillCategory: React.FC<CategoryProps> = ({ title, technologies, isExpande
               <SkillCard
                 key={technology.name}
                 name={technology.name}
-                icon={technology.icon}
                 index={idx}
               />
             ))}

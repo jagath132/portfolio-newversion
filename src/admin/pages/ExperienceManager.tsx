@@ -2,14 +2,19 @@ import { useState, useEffect } from 'react';
 import { useFirestore } from '../../hooks/useFirestore';
 import Modal from '../components/Modal';
 import ConfirmationModal from '../components/ConfirmationModal';
-import { Plus, Pencil, Trash2, Briefcase } from 'lucide-react';
+import { Plus, Pencil, Trash2, Briefcase, Upload, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../lib/firebase';
+import { toast } from 'react-toastify';
+
 
 interface ExperienceForm {
     title: string;
     companyName: string;
     date: string;
     points: string; // Text area for points, split by newline
+    icon: string;
 }
 
 const ExperienceManager = () => {
@@ -18,6 +23,7 @@ const ExperienceManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
 
     const { register, handleSubmit, reset, setValue } = useForm<ExperienceForm>();
 
@@ -36,7 +42,7 @@ const ExperienceManager = () => {
         const expData = {
             ...data,
             points: formattedPoints,
-            icon: 'work', // Placeholder for icon mapping
+            icon: data.icon || 'work', // Use provided icon or default placeholder
         };
 
         if (editingId) {
@@ -60,7 +66,7 @@ const ExperienceManager = () => {
         setValue('title', exp.title);
         setValue('companyName', exp.companyName);
         setValue('date', exp.date);
-        setValue('date', exp.date);
+        setValue('icon', exp.icon);
         setValue('points', Array.isArray(exp.points) ? exp.points.join('\n') : exp.points);
         setIsModalOpen(true);
     };
@@ -75,6 +81,25 @@ const ExperienceManager = () => {
             setExperiences(prev => prev.filter(e => e.id !== deleteId));
             setDeleteId(null);
             // fetchExperience();
+        }
+    };
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const storageRef = ref(storage, `companies/${Date.now()}_${file.name}`);
+            const snapshot = await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+            setValue('icon', downloadURL);
+            toast.success('Logo uploaded successfully');
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            toast.error('Failed to upload image');
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -176,6 +201,32 @@ const ExperienceManager = () => {
                                 className="w-full bg-[#1d1836] text-white px-4 py-3 rounded-lg border border-[#2b2b42] focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder-gray-500"
                                 placeholder="Jan 2023 - Present"
                             />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">Company Logo URL</label>
+                        <input
+                            {...register('icon')}
+                            className="w-full bg-[#1d1836] text-white px-4 py-3 rounded-lg border border-[#2b2b42] focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder-gray-500"
+                            placeholder="https://example.com/logo.png"
+                        />
+                        <div className="mt-2 flex items-center gap-2">
+                            <input
+                                type="file"
+                                id="logo-upload"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                            />
+                            <label
+                                htmlFor="logo-upload"
+                                className={`flex items-center gap-2 px-4 py-2 rounded-lg border border-[#2b2b42] cursor-pointer hover:bg-[#2b2b42] transition-colors ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
+                            >
+                                {uploading ? <Loader2 className="w-4 h-4 animate-spin text-purple-500" /> : <Upload className="w-4 h-4 text-gray-400" />}
+                                <span className="text-sm text-gray-400">Upload from Device</span>
+                            </label>
+                            <span className="text-xs text-gray-500">or paste URL above</span>
                         </div>
                     </div>
 
