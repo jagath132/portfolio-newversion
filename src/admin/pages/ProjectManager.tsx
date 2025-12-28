@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useFirestore } from '../../hooks/useFirestore';
 import Modal from '../components/Modal';
 import ConfirmationModal from '../components/ConfirmationModal';
@@ -23,14 +23,14 @@ const ProjectManager = () => {
 
   const { register, handleSubmit, reset, setValue } = useForm<ProjectForm>();
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     const data = await getAll();
     setProjects(data);
-  };
+  }, [getAll]);
 
   useEffect(() => {
     fetchProjects();
-  }, [getAll]);
+  }, [fetchProjects]);
 
   const onSubmit = async (data: ProjectForm) => {
     // Process tags from string to array if needed, or keep as string for now to match UI

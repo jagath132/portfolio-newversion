@@ -35,6 +35,76 @@ This creates a production build with:
 
 ## Deployment Steps
 
+### Option 1: Vercel
+
+#### Deploy Admin Console
+
+1. **Create Vercel Project**:
+
+   - Connect your GitHub repository to Vercel
+   - Create a new project for the admin console
+
+2. **Build Settings**:
+
+   - **Framework Preset**: Vite
+   - **Root Directory**: `./` (leave default)
+   - **Build Command**: `npm run build:admin`
+   - **Output Directory**: `dist`
+
+3. **Environment Variables**:
+
+   ```
+   VITE_APP_MODE=admin
+   VITE_FIREBASE_API_KEY=your_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+   ```
+
+4. **Domain Configuration**:
+
+   - Set custom domain: `admin.yourdomain.com`
+   - Configure DNS to point to Vercel
+
+5. **Deploy**: Push to your repository or trigger manual deploy
+
+#### Deploy Portfolio
+
+1. **Create Separate Vercel Project**:
+
+   - Create another Vercel project from the same repository
+   - This ensures separate deployments for admin and portfolio
+
+2. **Build Settings**:
+
+   - **Framework Preset**: Vite
+   - **Root Directory**: `./` (leave default)
+   - **Build Command**: `npm run build:portfolio`
+   - **Output Directory**: `dist`
+
+3. **Environment Variables**:
+
+   ```
+   VITE_APP_MODE=portfolio
+   VITE_FIREBASE_API_KEY=your_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+   VITE_WEB3FORMS_ACCESS_KEY=your_web3forms_key
+   ```
+
+4. **Domain Configuration**:
+
+   - Set custom domain: `yourdomain.com` (main portfolio domain)
+
+5. **Deploy**: Push to repository or trigger manual deploy
+
 ### Option 2: Netlify
 
 #### Deploy Admin Console
@@ -43,7 +113,17 @@ This creates a production build with:
 2. Build settings:
    - **Build command**: `npm run build:admin`
    - **Publish directory**: `dist`
-3. Environment variables: (same as Vercel above, with `VITE_APP_MODE=admin`)
+3. Environment variables:
+   ```
+   VITE_APP_MODE=admin
+   VITE_FIREBASE_API_KEY=your_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+   ```
 4. Domain settings: `admin.yourdomain.com`
 
 #### Deploy Portfolio
@@ -52,7 +132,18 @@ This creates a production build with:
 2. Build settings:
    - **Build command**: `npm run build:portfolio`
    - **Publish directory**: `dist`
-3. Environment variables: (same as Vercel above, with `VITE_APP_MODE=portfolio`)
+3. Environment variables:
+   ```
+   VITE_APP_MODE=portfolio
+   VITE_FIREBASE_API_KEY=your_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+   VITE_WEB3FORMS_ACCESS_KEY=your_web3forms_key
+   ```
 4. Domain settings: `yourdomain.com`
 
 ### Option 3: Firebase Hosting
@@ -150,6 +241,15 @@ Both deployments need these Firebase configuration variables:
 
 3. **CORS**: Both apps use the same Firebase project, so CORS is handled automatically.
 
+### Vercel-Specific Notes
+
+- **Automatic Deployments**: Vercel automatically deploys on every push to your main branch
+- **Preview Deployments**: Each pull request gets a preview URL for testing
+- **Environment Variables**: Set them in Vercel dashboard under Project Settings → Environment
+  Variables
+- **Build Caching**: Vercel caches dependencies for faster builds
+- **Analytics**: Vercel provides built-in analytics for your deployments
+
 ## Testing Locally
 
 ### Test Admin Mode
@@ -187,14 +287,27 @@ npm run dev
 - Verify all Firebase environment variables are set correctly
 - Check Firebase Console for authorized domains
 
+### Issue: Vercel build fails
+
+- Check build logs in Vercel dashboard
+- Ensure `npm run build:admin` or `npm run build:portfolio` works locally
+- Verify Node.js version in Vercel (should match your local version)
+
+### Issue: Wrong mode deployed on Vercel
+
+- Check environment variables in Vercel project settings
+- Ensure each project has the correct `VITE_APP_MODE` value
+- Redeploy after changing environment variables
+
 ## Maintenance
 
 When updating code:
 
 1. Push changes to your repository
-2. Both Vercel/Netlify projects will auto-deploy
-3. Each will build with its respective mode
-4. No manual intervention needed
+2. Both Vercel projects will auto-deploy (if enabled)
+3. Netlify projects will also auto-deploy
+4. Each platform will build with its respective mode
+5. No manual intervention needed
 
 ## Cost Optimization
 

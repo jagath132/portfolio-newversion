@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
 import { styles } from '../../constants/styles';
@@ -10,18 +10,12 @@ const Typewriter = ({ texts }: { texts: string[] }) => {
   const [loopNum, setLoopNum] = useState(0);
   const [delta, setDelta] = useState(300 - Math.random() * 100);
 
-  useEffect(() => {
-    let ticker = setInterval(() => {
-      tick();
-    }, delta);
-
-    return () => { clearInterval(ticker) };
-  }, [text, delta]);
-
-  const tick = () => {
-    let i = loopNum % texts.length;
-    let fullText = texts[i];
-    let updatedText = isDeleting ? fullText.substring(0, text.length - 1) : fullText.substring(0, text.length + 1);
+  const tick = useCallback(() => {
+    const i = loopNum % texts.length;
+    const fullText = texts[i];
+    const updatedText = isDeleting
+      ? fullText.substring(0, text.length - 1)
+      : fullText.substring(0, text.length + 1);
 
     setText(updatedText);
 
@@ -40,7 +34,17 @@ const Typewriter = ({ texts }: { texts: string[] }) => {
       // Typing speed
       setDelta(100);
     }
-  };
+  }, [text, isDeleting, loopNum, texts, setText, setIsDeleting, setLoopNum, setDelta]);
+
+  useEffect(() => {
+    const ticker = setInterval(() => {
+      tick();
+    }, delta);
+
+    return () => {
+      clearInterval(ticker);
+    };
+  }, [delta, tick]);
 
   return (
     <span className="bg-gradient-to-r from-accent-cyan via-purple-500 to-accent-pink bg-clip-text text-transparent font-bold tracking-wide">
@@ -53,13 +57,16 @@ const Typewriter = ({ texts }: { texts: string[] }) => {
 const Hero = () => {
   return (
     <section className="relative w-full h-screen mx-auto flex flex-col items-center justify-center overflow-hidden bg-primary">
-
       {/* Background Glow Effects */}
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-purple-600/20 to-blue-600/20 blur-[120px] animate-pulse-glow" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-accent-cyan/20 to-accent-pink/20 blur-[120px] animate-pulse-glow" style={{ animationDelay: '2s' }} />
+      <div
+        className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-accent-cyan/20 to-accent-pink/20 blur-[120px] animate-pulse-glow"
+        style={{ animationDelay: '2s' }}
+      />
 
-      <div className={`${styles.paddingX} max-w-7xl mx-auto z-10 flex flex-col items-center text-center gap-6`}>
-
+      <div
+        className={`${styles.paddingX} max-w-7xl mx-auto z-10 flex flex-col items-center text-center gap-6`}
+      >
         {/* Intro Label */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -68,7 +75,9 @@ const Hero = () => {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-white/10"
         >
           <span className="w-2 h-2 rounded-full bg-accent-cyan animate-pulse" />
-          <span className="text-secondary font-medium text-sm tracking-wider uppercase">Available for work</span>
+          <span className="text-secondary font-medium text-sm tracking-wider uppercase">
+            Available for work
+          </span>
         </motion.div>
 
         {/* Main Title */}
@@ -106,7 +115,7 @@ const Hero = () => {
         >
           <a
             href="#projects"
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault();
               const element = document.getElementById('projects');
               if (element) {
@@ -123,7 +132,7 @@ const Hero = () => {
           </a>
           <a
             href="#contact"
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault();
               const element = document.getElementById('contact');
               if (element) {

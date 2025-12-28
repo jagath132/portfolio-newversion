@@ -57,7 +57,7 @@ export const useFirestore = (collectionName: string) => {
         }
       );
       return () => unsubscribe();
-    }, [collectionName]);
+    }, []);
   };
 
   const add = useCallback(
