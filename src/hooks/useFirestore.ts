@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   collection,
   addDoc,
@@ -38,6 +38,8 @@ export const useFirestore = (collectionName: string) => {
   }, [collectionName]);
 
   const useRealtime = (callback: (data: any[]) => void) => {
+    const callbackRef = useRef(callback);
+    callbackRef.current = callback;
     useEffect(() => {
       const q = query(collection(db, collectionName), orderBy('createdAt', 'desc'));
       const unsubscribe = onSnapshot(
@@ -47,7 +49,7 @@ export const useFirestore = (collectionName: string) => {
             id: doc.id,
             ...doc.data(),
           }));
-          callback(data);
+          callbackRef.current(data);
         },
         err => {
           setError(err.message);
@@ -55,7 +57,7 @@ export const useFirestore = (collectionName: string) => {
         }
       );
       return () => unsubscribe();
-    }, [collectionName, callback]);
+    }, [collectionName]);
   };
 
   const add = useCallback(
