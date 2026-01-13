@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { SectionWrapper } from '../../hoc';
 import { config } from '../../constants/config';
@@ -139,13 +140,17 @@ const Tech = () => {
     <>
       <Header {...config.sections.skills} />
 
-      <div className="mt-4 max-w-3xl text-[17px] leading-[30px] text-secondary">
-        <p>
-          I leverage a diverse set of technologies to build robust, scalable applications. From
-          front-end interfaces to back-end logic and data analysis, my toolkit is constantly
-          evolving to meet modern development standards.
+      <motion.div
+        className="mt-8"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+        viewport={{ once: true }}
+      >
+        <p className="text-secondary mt-4 text-[17px] leading-[30px] text-justify">
+          {config.sections.skills.content}
         </p>
-      </div>
+      </motion.div>
 
       <div className="mt-16 flex flex-col gap-8">
         {skillCategories.map((category, index) => (

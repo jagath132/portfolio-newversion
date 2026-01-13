@@ -75,10 +75,12 @@ export const config: TConfig = {
     skills: {
       p: 'My technical skills',
       h2: 'Skills.',
+      content: `My technical expertise is built on a foundation of diverse technologies, spanning from core programming languages and data analytics to cutting-edge AI automation. I focus on selecting the right tools to build efficient, scalable solutions that bridge the gap between complex data and actionable insights.`,
     },
     experience: {
       p: 'What I have done so far',
       h2: 'Work Experience.',
+      content: `Throughout my career, I've built a strong foundation in data analysis, automation, and software development. From implementing complex data pipelines to developing user-friendly dashboards and automating business processes, I've consistently delivered solutions that drive efficiency and informed decision-making. My experience spans across various industries, working with cutting-edge technologies to solve real-world challenges.`,
     },
     education: {
       p: 'My education',
@@ -87,7 +89,7 @@ export const config: TConfig = {
     works: {
       p: 'My work',
       h2: 'Projects.',
-      content: `Following projects showcases my skills and experience through real-world examples of my work. Each project is briefly described with links to code repositories and live demos in it. It reflects my ability to solve complex problems, work with different technologies, and manage projects effectively.`,
+      content: `These projects represent my journey in solving real-world challenges through data-driven approaches and innovative automation. Each work demonstrates my commitment to excellence, showing how I leverage various technologies to build impactful tools, streamline workflows, and deliver meaningful results.`,
     },
   },
 };

@@ -177,15 +177,14 @@ const Experience = () => {
       <Header {...config.sections.experience} />
 
       <motion.div
-        className="mt-8 max-w-3xl"
+        className="mt-8"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.2 }}
         viewport={{ once: true }}
       >
-        <p className="text-[17px] leading-[30px] text-secondary">
-          My professional journey and key achievements in data analysis, automation, and software
-          development.
+        <p className="text-secondary mt-4 text-[17px] leading-[30px] text-justify">
+          {config.sections.experience.content}
         </p>
       </motion.div>
 

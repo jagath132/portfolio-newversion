@@ -233,13 +233,13 @@ const Projects = () => {
 
       {/* Description */}
       <motion.div
-        className="mt-8 max-w-3xl"
+        className="mt-8"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.2 }}
         viewport={{ once: true }}
       >
-        <p className="text-[17px] leading-[30px] text-secondary">{config.sections.works.content}</p>
+        <p className="text-[17px] leading-[30px] text-secondary text-justify">{config.sections.works.content}</p>
       </motion.div>
 
       {/* Projects Grid - 2 Column Layout */}

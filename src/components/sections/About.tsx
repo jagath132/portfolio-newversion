@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 import { services } from '../../constants';
 import { SectionWrapper } from '../../hoc';
@@ -45,9 +46,17 @@ const About = () => {
     <>
       <Header {...config.sections.about} />
 
-      <p className="text-secondary mt-4 text-[17px] leading-[30px] text-justify">
-        {config.sections.about.content}
-      </p>
+      <motion.div
+        className="mt-4"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+        viewport={{ once: true }}
+      >
+        <p className="text-secondary text-[17px] leading-[30px] text-justify">
+          {config.sections.about.content}
+        </p>
+      </motion.div>
 
       <div className="mt-20 flex flex-wrap gap-10 max-sm:justify-center">
         {services.map((service, index) => (
