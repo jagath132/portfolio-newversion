@@ -7,11 +7,14 @@ import { Analytics } from '@vercel/analytics/react';
 import { Navbar, StarsCanvas, Footer } from './components';
 import { config } from './constants/config';
 import { AuthProvider } from './context/AuthContext';
-import AdminLayout from './admin/layouts/AdminLayout';
-import Login from './admin/pages/Login';
-import Signup from './admin/pages/Signup';
-import Dashboard from './admin/pages/Dashboard';
-import ProjectManager from './admin/pages/ProjectManager';
+const AdminLayout = lazy(() => import('./admin/layouts/AdminLayout'));
+const Login = lazy(() => import('./admin/pages/Login'));
+const Signup = lazy(() => import('./admin/pages/Signup'));
+const Dashboard = lazy(() => import('./admin/pages/Dashboard'));
+const ProjectManager = lazy(() => import('./admin/pages/ProjectManager'));
+const ExperienceManager = lazy(() => import('./admin/pages/ExperienceManager'));
+const SkillsManager = lazy(() => import('./admin/pages/SkillsManager'));
+const EducationManager = lazy(() => import('./admin/pages/EducationManager'));
 
 // Lazy Load Main Sections
 const Hero = lazy(() => import('./components/sections/Hero'));
@@ -79,9 +82,7 @@ const PortfolioLayout = () => {
   );
 };
 
-import ExperienceManager from './admin/pages/ExperienceManager';
-import SkillsManager from './admin/pages/SkillsManager';
-import EducationManager from './admin/pages/EducationManager';
+// Lazy imports for Admin pages are handled above
 
 const App = () => {
   useEffect(() => {
@@ -103,14 +104,21 @@ const App = () => {
           {isAdminMode ? (
             <>
               {/* Admin Routes (Hosted on Root) */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/" element={<AdminLayout />}>
-                <Route index element={<Dashboard />} />
-                <Route path="projects" element={<ProjectManager />} />
-                <Route path="experience" element={<ExperienceManager />} />
-                <Route path="skills" element={<SkillsManager />} />
-                <Route path="education" element={<EducationManager />} />
+              <Route path="/login" element={<Suspense fallback={<LoadingFallback />}><Login /></Suspense>} />
+              <Route path="/signup" element={<Suspense fallback={<LoadingFallback />}><Signup /></Suspense>} />
+              <Route
+                path="/"
+                element={
+                  <Suspense fallback={<LoadingFallback />}>
+                    <AdminLayout />
+                  </Suspense>
+                }
+              >
+                <Route index element={<Suspense fallback={<LoadingFallback />}><Dashboard /></Suspense>} />
+                <Route path="projects" element={<Suspense fallback={<LoadingFallback />}><ProjectManager /></Suspense>} />
+                <Route path="experience" element={<Suspense fallback={<LoadingFallback />}><ExperienceManager /></Suspense>} />
+                <Route path="skills" element={<Suspense fallback={<LoadingFallback />}><SkillsManager /></Suspense>} />
+                <Route path="education" element={<Suspense fallback={<LoadingFallback />}><EducationManager /></Suspense>} />
               </Route>
               {/* Redirect unknown routes to home */}
               <Route path="*" element={<Navigate to="/" replace />} />

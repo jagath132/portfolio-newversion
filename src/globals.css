@@ -47,6 +47,15 @@ html {
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
+.admin-glass {
+  background: rgba(30, 41, 59, 0.7);
+  /* Slate 800 with opacity */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -667,20 +676,39 @@ footer a[aria-label] {
 
 /* Custom Scrollbar for admin panel */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #100d25;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #2b2b42;
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #00f2ea;
+  background: rgba(56, 189, 248, 0.5);
+  /* admin-primary with opacity (Sky Blue) */
+}
+
+/* Premium Utility Classes */
+.admin-card-glow {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2), 0 0 40px rgba(56, 189, 248, 0.05);
+}
+
+.text-gradient-primary {
+  background: linear-gradient(135deg, #fff 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.input-focus-glow:focus {
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1), 0 0 20px rgba(56, 189, 248, 0.05);
 }
 
 /* Reduced Motion Support */

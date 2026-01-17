@@ -13,6 +13,14 @@ module.exports = {
         "white-100": "#f3f3f3",
         "accent-cyan": "#00f2ea",
         "accent-pink": "#ff0055",
+        // Admin Professional Palette
+        "admin-bg": "#020617", // Slate 950
+        "admin-card": "#0f172a", // Slate 900
+        "admin-card-hover": "#1e293b", // Slate 800
+        "admin-text": "#f8fafc", // Slate 50
+        "admin-text-muted": "#94a3b8", // Slate 400
+        "admin-primary": "#38bdf8", // Sky 400
+        "admin-border": "#1e293b", // Slate 800
       },
       boxShadow: {
         card: "0px 35px 120px -15px #211e35",

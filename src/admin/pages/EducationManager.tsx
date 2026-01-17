@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useFirestore } from '../../hooks/useFirestore';
+import { motion, AnimatePresence } from 'framer-motion';
 import Modal from '../components/Modal';
 import ConfirmationModal from '../components/ConfirmationModal';
-import { Plus, Pencil, Trash2, GraduationCap } from 'lucide-react';
+import { Plus, Pencil, Trash2, GraduationCap, Loader2, Calendar, BookOpen, Award } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 interface EducationForm {
@@ -34,18 +35,17 @@ const EducationManager = () => {
   const onSubmit = async (data: EducationForm) => {
     if (editingId) {
       await update(editingId, data);
-      setEducations(prev => prev.map(e => (e.id === editingId ? { ...e, ...data } : e)));
+      setEducations((prev) => prev.map((e) => (e.id === editingId ? { ...e, ...data } : e)));
     } else {
       const id = await add(data);
       if (id) {
-        setEducations(prev => [{ id, ...data }, ...prev]);
+        setEducations((prev) => [{ id, ...data }, ...prev]);
       }
     }
 
     setIsModalOpen(false);
     reset();
     setEditingId(null);
-    // fetchEducation();
   };
 
   const handleEdit = (edu: any) => {
@@ -65,21 +65,22 @@ const EducationManager = () => {
   const confirmDelete = async () => {
     if (deleteId) {
       await remove(deleteId);
-      setEducations(prev => prev.filter(e => e.id !== deleteId));
+      setEducations((prev) => prev.filter((e) => e.id !== deleteId));
       setDeleteId(null);
-      // fetchEducation();
     }
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-8 animate-in fade-in slide-in-from-top-4 duration-500">
+    <div className="space-y-8 pb-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-white relative inline-block">
-            Education & Certifications
-            <span className="absolute -bottom-1 left-0 w-1/3 h-1 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full"></span>
+          <h1 className="text-3xl font-bold text-admin-text font-display flex items-center gap-3">
+            <GraduationCap className="w-8 h-8 text-admin-primary" />
+            Education
           </h1>
-          <p className="text-gray-400 mt-2">Manage your academic background</p>
+          <p className="text-admin-text-muted mt-2 text-sm">
+            Manage your academic background and certificates
+          </p>
         </div>
         <button
           onClick={() => {
@@ -87,173 +88,231 @@ const EducationManager = () => {
             reset();
             setIsModalOpen(true);
           }}
-          className="group bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-300 shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 hover:-translate-y-0.5"
+          className="group px-6 py-3 rounded-xl bg-admin-primary text-white hover:bg-indigo-600 transition-all duration-300 flex items-center gap-2 shadow-lg shadow-indigo-500/20 font-medium"
         >
           <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-          <span>Add Entry</span>
+          <span>Add New Entry</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {educations.map((edu, index) => (
-          <div
-            key={edu.id}
-            className="bg-[#151030] p-6 rounded-2xl border border-[#2b2b42] flex flex-col group hover:-translate-y-2 hover:shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 relative overflow-hidden"
-            style={{ animation: `fadeInUp 0.5s ease-out ${index * 100}ms backwards` }}
-          >
-            {/* Hover glow effect */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all duration-500 -mr-10 -mt-10" />
-
-            <div className="flex items-start gap-4 mb-4 relative z-10">
-              <div className="p-3 bg-gradient-to-br from-[#1d1836] to-[#100d25] rounded-xl border border-[#2b2b42] group-hover:border-cyan-500/50 transition-colors">
-                <GraduationCap className="w-6 h-6 text-cyan-400 group-hover:text-white transition-colors" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors">
-                  {edu.degree}
-                </h3>
-                <p className="text-purple-400 font-medium">{edu.institution}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="text-gray-500 text-xs font-mono">{edu.year}</span>
-                  <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full capitalize border ${
-                      edu.type === 'certification'
-                        ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                        : 'bg-green-500/10 text-green-400 border-green-500/20'
-                    }`}
-                  >
-                    {edu.type || 'education'}
-                  </span>
+      {loading && educations.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 space-y-4">
+          <Loader2 className="w-10 h-10 animate-spin text-admin-primary" />
+          <p className="text-admin-text-muted">Loading academic record...</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <AnimatePresence mode="popLayout">
+            {educations.map((edu, index) => (
+              <motion.div
+                key={edu.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ delay: index * 0.05 }}
+                className="bg-admin-card p-6 rounded-3xl border border-admin-border flex flex-col group hover:border-admin-primary/50 transition-all duration-300 shadow-sm hover:shadow-xl relative overflow-hidden"
+              >
+                {/* Decoration */}
+                <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+                  {edu.type === 'certification' ? (
+                    <Award className="w-32 h-32" />
+                  ) : (
+                    <BookOpen className="w-32 h-32" />
+                  )}
                 </div>
-              </div>
-            </div>
 
-            <p className="text-gray-400 text-sm mb-6 flex-1 relative z-10">{edu.description}</p>
+                <div className="flex items-start gap-5 mb-6 relative z-10">
+                  <div className="w-14 h-14 bg-black/20 rounded-2xl flex items-center justify-center flex-shrink-0 border border-admin-border group-hover:border-admin-primary/50 transition-colors shadow-inner">
+                    {edu.type === 'certification' ? (
+                      <Award className="w-7 h-7 text-admin-primary" />
+                    ) : (
+                      <GraduationCap className="w-7 h-7 text-admin-primary" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-xl font-bold text-admin-text group-hover:text-admin-primary transition-colors leading-tight">
+                      {edu.degree}
+                    </h3>
+                    <p className="text-admin-text-muted font-medium mt-1">{edu.institution}</p>
+                    <div className="flex items-center gap-3 mt-3">
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-lg border border-admin-border">
+                        <Calendar className="w-3.5 h-3.5 text-admin-primary" />
+                        <span className="text-[11px] font-bold text-admin-text-muted">
+                          {edu.year}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg border ${edu.type === 'certification'
+                          ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                          : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                          }`}
+                      >
+                        {edu.type || 'education'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
-            <div className="flex gap-2 pt-4 border-t border-[#2b2b42] relative z-10 mt-auto">
-              <button
-                onClick={() => handleEdit(edu)}
-                className="flex-1 bg-[#1d1836] hover:bg-[#2b2b42] text-white py-2 rounded-lg flex items-center justify-center gap-2 transition-colors group/btn"
-              >
-                <Pencil className="w-4 h-4 text-cyan-400 group-hover/btn:text-white transition-colors" />
-                <span className="text-sm">Edit</span>
-              </button>
-              <button
-                onClick={() => handleDeleteClick(edu.id)}
-                className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-500 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors group/btn"
-              >
-                <Trash2 className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
-                <span className="text-sm">Delete</span>
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+                <p className="text-admin-text-muted text-sm mb-8 flex-1 leading-relaxed relative z-10 pl-1 border-l-2 border-admin-border group-hover:border-admin-primary/30 ml-7 transition-colors">
+                  {edu.description}
+                </p>
+
+                <div className="flex gap-3 pt-6 border-t border-admin-border relative z-10">
+                  <button
+                    onClick={() => handleEdit(edu)}
+                    className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-admin-text text-sm font-medium flex items-center justify-center gap-2 transition-all"
+                  >
+                    <Pencil className="w-4 h-4 text-admin-primary" />
+                    <span>Edit Entry</span>
+                  </button>
+                  <button
+                    onClick={() => handleDeleteClick(edu.id)}
+                    className="px-4 py-2.5 rounded-xl bg-red-500/5 hover:bg-red-500 text-red-400 hover:text-white transition-all group/del flex items-center justify-center"
+                  >
+                    <Trash2 className="w-4 h-4 group-hover/del:scale-110 transition-transform" />
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!loading && educations.length === 0 && (
+        <div className="text-center py-20 bg-admin-card rounded-3xl border border-dashed border-admin-border">
+          <BookOpen className="w-16 h-16 text-admin-text-muted mx-auto mb-4 opacity-20" />
+          <h3 className="text-xl font-bold text-admin-text mb-2">Academic records empty</h3>
+          <p className="text-admin-text-muted max-w-sm mx-auto mb-8">
+            You haven't listed any education or certifications. Highlight your credentials here.
+          </p>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="px-6 py-2 bg-admin-primary text-white rounded-xl hover:bg-indigo-600 transition-all font-medium"
+          >
+            Add My First Credential
+          </button>
+        </div>
+      )}
 
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={editingId ? 'Edit Entry' : 'Add New Entry'}
       >
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Entry Type</label>
-            <div className="relative">
-              <select
-                {...register('type')}
-                className="w-full bg-[#1d1836] text-white px-4 py-3 rounded-lg border border-[#2b2b42] focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all appearance-none"
-              >
-                <option value="education">Education</option>
-                <option value="certification">Certification</option>
-              </select>
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                <svg
-                  className="w-4 h-4 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-admin-text-muted mb-2">
+                Entry Type
+              </label>
+              <div className="relative">
+                <select
+                  {...register('type')}
+                  className="w-full bg-black/20 text-admin-text px-4 py-3 rounded-xl border border-admin-border focus:border-admin-primary focus:ring-1 focus:ring-admin-primary outline-none transition-all appearance-none cursor-pointer"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
+                  <option value="education" className="bg-admin-card">Education</option>
+                  <option value="certification" className="bg-admin-card">Certification</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 text-admin-text-muted"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Degree / Certification Title
-            </label>
-            <input
-              {...register('degree', { required: true })}
-              className="w-full bg-[#1d1836] text-white px-4 py-3 rounded-lg border border-[#2b2b42] focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder-gray-500"
-              placeholder="e.g. BSc Computer Science"
-            />
-          </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-admin-text-muted mb-2">
+                Degree / Certification Title
+              </label>
+              <input
+                {...register('degree', { required: true })}
+                className="w-full bg-black/20 text-admin-text px-4 py-3 rounded-xl border border-admin-border focus:border-admin-primary focus:ring-1 focus:ring-admin-primary outline-none transition-all placeholder:text-gray-600"
+                placeholder="e.g. BSc Computer Science"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Institution / Issuer
-            </label>
-            <input
-              {...register('institution', { required: true })}
-              className="w-full bg-[#1d1836] text-white px-4 py-3 rounded-lg border border-[#2b2b42] focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder-gray-500"
-              placeholder="e.g. University of Technology"
-            />
-          </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-admin-text-muted mb-2">
+                Institution / Issuer
+              </label>
+              <input
+                {...register('institution', { required: true })}
+                className="w-full bg-black/20 text-admin-text px-4 py-3 rounded-xl border border-admin-border focus:border-admin-primary focus:ring-1 focus:ring-admin-primary outline-none transition-all placeholder:text-gray-600"
+                placeholder="e.g. University of Technology"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Year / Date</label>
-            <input
-              {...register('year', { required: true })}
-              className="w-full bg-[#1d1836] text-white px-4 py-3 rounded-lg border border-[#2b2b42] focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder-gray-500"
-              placeholder="e.g. 2020 - 2024"
-            />
-          </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-admin-text-muted mb-2">
+                Year / Date Period
+              </label>
+              <input
+                {...register('year', { required: true })}
+                className="w-full bg-black/20 text-admin-text px-4 py-3 rounded-xl border border-admin-border focus:border-admin-primary focus:ring-1 focus:ring-admin-primary outline-none transition-all placeholder:text-gray-600"
+                placeholder="e.g. 2020 - 2024"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Description / Details
-            </label>
-            <textarea
-              {...register('description')}
-              rows={3}
-              className="w-full bg-[#1d1836] text-white px-4 py-3 rounded-lg border border-[#2b2b42] focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder-gray-500"
-              placeholder="Score, honors, or brief stats..."
-            />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-admin-text-muted mb-2">
+                Description / Highlights
+              </label>
+              <textarea
+                {...register('description')}
+                rows={4}
+                className="w-full bg-black/20 text-admin-text px-4 py-3 rounded-xl border border-admin-border focus:border-admin-primary focus:ring-1 focus:ring-admin-primary outline-none transition-all placeholder:text-gray-600 resize-none"
+                placeholder="Major achievements, honors, or relevant coursework..."
+              />
+            </div>
           </div>
 
           <div className="pt-4 flex justify-end gap-3">
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+              className="px-6 py-2.5 text-admin-text-muted hover:text-white hover:bg-white/5 rounded-xl transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-white rounded-lg transition-all shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40"
+              className="px-8 py-2.5 bg-admin-primary hover:bg-indigo-600 text-white rounded-xl transition-all shadow-lg shadow-indigo-500/20 font-bold flex items-center gap-2"
             >
-              {loading ? 'Saving...' : 'Save Entry'}
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save Entry'
+              )}
             </button>
           </div>
         </form>
       </Modal>
+
       <ConfirmationModal
         isOpen={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={confirmDelete}
-        title="Delete Education"
-        message="Are you sure you want to delete this education entry? This action cannot be undone."
+        title="Delete Record"
+        message="Are you sure you want to delete this educational record? This action cannot be undone."
         isDestructive={true}
         isLoading={loading}
-        confirmText="Yes, Delete Entry"
+        confirmText="Yes, Delete Record"
       />
     </div>
   );

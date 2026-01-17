@@ -1,5 +1,7 @@
 import { X } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ModalProps {
     isOpen: boolean;
@@ -9,7 +11,10 @@ interface ModalProps {
 }
 
 const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
+    const [mounted, setMounted] = useState(false);
+
     useEffect(() => {
+        setMounted(true);
         if (isOpen) {
             document.body.style.overflow = 'hidden';
         } else {
@@ -20,32 +25,45 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
         };
     }, [isOpen]);
 
-    if (!isOpen) return null;
+    if (!mounted) return null;
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div
-                className="bg-[#151030] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col border border-[#2b2b42]"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="p-6 border-b border-[#2b2b42] flex justify-between items-center bg-[#100d25]">
-                    <h2 className="text-xl font-bold text-white relative inline-block">
-                        {title}
-                        <span className="absolute -bottom-6 left-0 w-full h-[1px] bg-gradient-to-r from-purple-500 to-transparent"></span>
-                    </h2>
-                    <button
+    return createPortal(
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6 overflow-hidden">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+                        className="absolute inset-0 bg-black/80 backdrop-blur-md"
+                    />
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        className="bg-admin-card rounded-[2.5rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col border border-admin-border relative z-10"
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
+                        <div className="p-8 border-b border-admin-border flex justify-between items-center bg-black/20">
+                            <h2 className="text-2xl font-bold text-white relative inline-block">
+                                {title}
+                                <span className="absolute -bottom-1 left-0 w-12 h-1 bg-admin-primary rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)]"></span>
+                            </h2>
+                            <button
+                                onClick={onClose}
+                                className="p-3 hover:bg-white/5 rounded-xl transition-all text-admin-text-muted hover:text-white border border-transparent hover:border-white/10"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
 
-                <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
-                    {children}
+                        <div className="p-8 overflow-y-auto custom-scrollbar flex-1">{children}</div>
+                    </motion.div>
                 </div>
-            </div>
-        </div>
+            )}
+        </AnimatePresence>,
+        document.body
     );
 };
 
