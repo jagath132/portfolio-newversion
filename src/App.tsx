@@ -15,6 +15,7 @@ const ProjectManager = lazy(() => import('./admin/pages/ProjectManager'));
 const ExperienceManager = lazy(() => import('./admin/pages/ExperienceManager'));
 const SkillsManager = lazy(() => import('./admin/pages/SkillsManager'));
 const EducationManager = lazy(() => import('./admin/pages/EducationManager'));
+const SectionContentManager = lazy(() => import('./admin/pages/SectionContentManager'));
 
 // Lazy Load Main Sections
 const Hero = lazy(() => import('./components/sections/Hero'));
@@ -119,6 +120,7 @@ const App = () => {
                 <Route path="experience" element={<Suspense fallback={<LoadingFallback />}><ExperienceManager /></Suspense>} />
                 <Route path="skills" element={<Suspense fallback={<LoadingFallback />}><SkillsManager /></Suspense>} />
                 <Route path="education" element={<Suspense fallback={<LoadingFallback />}><EducationManager /></Suspense>} />
+                <Route path="sections" element={<Suspense fallback={<LoadingFallback />}><SectionContentManager /></Suspense>} />
               </Route>
               {/* Redirect unknown routes to home */}
               <Route path="*" element={<Navigate to="/" replace />} />

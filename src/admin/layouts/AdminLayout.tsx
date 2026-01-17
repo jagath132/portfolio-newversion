@@ -13,7 +13,8 @@ import {
   ChevronRight,
   ChevronLeft,
   User,
-  Bell
+  Bell,
+  FileText
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { auth } from '../../lib/firebase';
@@ -59,6 +60,7 @@ const AdminLayout = () => {
     { to: '/experience', icon: Briefcase, label: 'Experience' },
     { to: '/education', icon: GraduationCap, label: 'Education' },
     { to: '/skills', icon: Wrench, label: 'Skills' },
+    { to: '/sections', icon: FileText, label: 'Content' },
   ];
 
   const SidebarContent = () => (

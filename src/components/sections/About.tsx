@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 
 import { services } from '../../constants';
 import { SectionWrapper } from '../../hoc';
-import { config } from '../../constants/config';
+
 import { Header } from '../atoms/Header';
+import { useSectionContent } from '../../hooks/useSectionContent';
 
 interface IServiceCard {
   index: number;
@@ -42,9 +43,11 @@ const ServiceCard: React.FC<IServiceCard> = ({ title, icon }) => {
 };
 
 const About = () => {
+  const sectionData = useSectionContent('about');
+
   return (
     <>
-      <Header {...config.sections.about} />
+      <Header p={sectionData.p} h2={sectionData.h2} />
 
       <motion.div
         className="mt-4"
@@ -54,7 +57,7 @@ const About = () => {
         viewport={{ once: true }}
       >
         <p className="text-secondary text-[17px] leading-[30px] text-justify">
-          {config.sections.about.content}
+          {sectionData.content}
         </p>
       </motion.div>
 
