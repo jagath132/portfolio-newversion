@@ -1,427 +1,210 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useRef, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { SectionWrapper } from '../../hoc';
 import { useFirestore } from '../../hooks/useFirestore';
 import { config } from '../../constants/config';
 import { Header } from '../atoms/Header';
 import { TProject } from '../../types';
-import { ExternalLink, Github, ArrowRight } from 'lucide-react';
+import { ExternalLink, Github } from 'lucide-react';
 
-const ProjectCard = React.memo<{ index: number; onSelect: () => void } & TProject>(
-  ({ index, name, description, tags, image, sourceCodeLink, demoLink, onSelect }) => {
-    const [isHovered, setIsHovered] = useState(false);
-    const [imageLoaded, setImageLoaded] = useState(false);
+const ProjectCard = ({
+  project,
+  index,
+  total,
+}: {
+  project: TProject;
+  index: number;
+  total: number;
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    return (
+  // We track the scroll progress while this container sits at the top of the viewport
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end start'],
+  });
+
+  // Sophisticated stacking physics
+  // As we scroll down, scale shrinks slightly, opacity fades, and it angles back
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.1]);
+  const translateY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+
+  const { name, description, tags, image, sourceCodeLink, demoLink } = project;
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Dynamic border glow logic based on index
+  const borderColors = [
+    'border-accent-cyan/40 shadow-accent-cyan/10',
+    'border-purple-500/40 shadow-purple-500/10',
+    'border-accent-pink/40 shadow-accent-pink/10',
+    'border-green-500/40 shadow-green-500/10',
+  ];
+  const activeColor = borderColors[index % borderColors.length];
+
+  return (
+    <div
+      ref={containerRef}
+      className="h-[100vh] flex items-center justify-center sticky top-0 perspective-[1500px]"
+    >
       <motion.div
-        layout
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: index * 0.1 }}
-        viewport={{ once: true }}
-        className="w-full"
+        style={{
+          scale,
+          opacity,
+          y: translateY,
+          top: `calc(10vh + ${index * 15}px)`, // Adjusts stack offset
+        }}
+        className={`w-full max-w-[1200px] mx-auto rounded-[30px] md:rounded-[40px] overflow-hidden bg-[#0d0d14] border ${activeColor} shadow-[0_-10px_60px_rgba(0,0,0,0.6)] flex flex-col md:flex-row h-[85vh] md:h-[75vh] origin-top relative`}
       >
-        <motion.div
-          onClick={onSelect}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          className="relative group cursor-pointer"
-          whileHover={{ x: 8 }}
-          transition={{ duration: 0.2 }}
-        >
-          {/* Number Badge */}
-          <motion.div
-            className="absolute -left-8 top-0 text-7xl font-bold text-accent-cyan/10 group-hover:text-accent-cyan/20 transition-colors duration-300"
-            animate={{ opacity: isHovered ? 0.4 : 0.2 }}
-            aria-hidden="true"
-          >
-            {String(index + 1).padStart(2, '0')}
-          </motion.div>
+        {/* Left Content Area (Text) */}
+        <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center relative overflow-hidden order-2 md:order-1 h-3/5 md:h-full">
+          {/* Subtle Background Glow */}
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
 
-          {/* Main Card Container */}
-          <div className="relative overflow-hidden rounded-2xl">
-            {/* Image Section */}
-            <motion.div className="relative h-[280px] overflow-hidden rounded-2xl">
-              {!imageLoaded && (
-                <div className="absolute inset-0 bg-gray-800 animate-pulse flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-cyan"></div>
-                </div>
-              )}
-              <motion.img
-                src={image}
-                alt={`${name} project screenshot - ${description.substring(0, 100)}`}
-                className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'
+          <div className="relative z-10 flex flex-col items-start h-full">
+            {/* Index Tracker */}
+            <div className="text-xl md:text-2xl font-mono text-white/40 mb-6 flex items-center gap-4">
+              <span className="w-12 h-px bg-white/20" />
+              <span>0{index + 1}</span>
+              <span className="text-sm">/ 0{total}</span>
+            </div>
+
+            <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight leading-tight">
+              {name}
+            </h3>
+
+            {/* Tech Tags */}
+            <div className="flex flex-wrap gap-2 mb-8">
+              {tags.map((tag, i) => (
+                <span
+                  key={i}
+                  className={`text-xs md:text-sm tracking-wider font-bold px-4 py-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md ${
+                    tag.color || 'text-white'
                   }`}
-                animate={{ scale: isHovered ? 1.08 : 1 }}
-                transition={{ duration: 0.3 }}
-                onLoad={() => setImageLoaded(true)}
-                loading="lazy"
-              />
-
-              {/* Dark Overlay */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20"
-                animate={{ opacity: isHovered ? 1 : 0.7 }}
-                transition={{ duration: 0.2 }}
-                aria-hidden="true"
-              />
-
-              {/* Tech Stack Badges on Image */}
-              <motion.div
-                className="absolute top-4 left-4 flex gap-2 flex-wrap"
-                animate={{ opacity: isHovered ? 1 : 0.6 }}
-                transition={{ duration: 0.2 }}
-                aria-hidden="true"
-              >
-                {tags.slice(0, 2).map(tag => (
-                  <span
-                    key={tag.name}
-                    className="px-3 py-1 text-xs font-bold bg-gradient-to-r from-accent-cyan to-purple-500 text-black rounded-full"
-                  >
-                    {tag.name}
-                  </span>
-                ))}
-              </motion.div>
-
-              {/* Action Icons */}
-              <motion.div
-                className="absolute inset-0 flex items-center justify-center gap-6"
-                animate={{ opacity: isHovered ? 1 : 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                {sourceCodeLink && (
-                  <motion.a
-                    href={sourceCodeLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-accent-cyan/90 hover:bg-accent-cyan p-4 rounded-full text-black transition-all backdrop-blur-sm"
-                    whileHover={{ scale: 1.15 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={e => e.stopPropagation()}
-                    aria-label={`View ${name} source code on GitHub`}
-                  >
-                    <Github size={24} aria-hidden="true" />
-                  </motion.a>
-                )}
-                {demoLink && (
-                  <motion.a
-                    href={demoLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-purple-500/90 hover:bg-purple-500 p-4 rounded-full text-white transition-all backdrop-blur-sm"
-                    whileHover={{ scale: 1.15 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={e => e.stopPropagation()}
-                    aria-label={`View ${name} live demo`}
-                  >
-                    <ExternalLink size={24} aria-hidden="true" />
-                  </motion.a>
-                )}
-                <motion.button
-                  className="bg-purple-500/90 hover:bg-purple-500 p-4 rounded-full text-white transition-all backdrop-blur-sm"
-                  whileHover={{ scale: 1.15 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={e => {
-                    e.stopPropagation();
-                    onSelect();
-                  }}
-                  aria-label={`View ${name} project details`}
                 >
-                  <ExternalLink size={24} aria-hidden="true" />
-                </motion.button>
-              </motion.div>
-            </motion.div>
+                  {tag.name}
+                </span>
+              ))}
+            </div>
 
-            {/* Content Section */}
-            <motion.div
-              className="p-6 bg-gradient-to-b from-white/8 to-white/3 backdrop-blur-sm border border-white/10"
-              animate={{
-                backgroundColor: isHovered
-                  ? 'rgba(255, 255, 255, 0.12)'
-                  : 'rgba(255, 255, 255, 0.05)',
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              <motion.h3
-                className="text-2xl font-bold text-white mb-2 flex items-center gap-2"
-                animate={{
-                  color: isHovered ? '#00f2ea' : '#ffffff',
-                }}
-                transition={{ duration: 0.2 }}
-              >
-                <span>{name}</span>
-                <motion.span animate={{ x: isHovered ? 4 : 0 }} transition={{ duration: 0.2 }}>
-                  <ArrowRight size={20} />
-                </motion.span>
-              </motion.h3>
+            <p className="text-secondary text-base lg:text-lg leading-relaxed mb-auto line-clamp-4 max-w-lg">
+              {description}
+            </p>
 
-              <p className="text-sm text-secondary/80 line-clamp-2 mb-4">{description}</p>
-
-              {/* Tag Grid */}
-              <motion.div
-                className="flex flex-wrap gap-2"
-                animate={{ opacity: isHovered ? 1 : 0.7 }}
-                transition={{ duration: 0.2 }}
-              >
-                {tags.map(tag => (
-                  <span
-                    key={tag.name}
-                    className={`text-xs font-medium px-2 py-1 rounded-md ${tag.color} bg-white/5 border border-white/10`}
-                  >
-                    {tag.name}
+            {/* Call to Actions (Buttons) */}
+            <div className="flex flex-wrap gap-4 mt-8 w-full md:w-auto">
+              {sourceCodeLink && (
+                <a
+                  href={sourceCodeLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 md:flex-none group relative px-8 py-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center gap-3 hover:bg-white/10 transition-colors"
+                >
+                  <Github
+                    size={22}
+                    className="text-white group-hover:scale-110 transition-transform"
+                  />
+                  <span className="font-bold text-white text-sm md:text-base">Code</span>
+                </a>
+              )}
+              {demoLink && (
+                <a
+                  href={demoLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 md:flex-none group relative px-8 py-4 rounded-2xl bg-gradient-to-r from-accent-cyan via-purple-500 to-accent-pink flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(0,242,234,0.4)] transition-shadow border border-white/10"
+                >
+                  <ExternalLink
+                    size={22}
+                    className="text-white group-hover:scale-110 group-hover:rotate-12 transition-transform"
+                  />
+                  <span className="font-bold text-white text-sm md:text-base tracking-wide">
+                    Live Demo
                   </span>
-                ))}
-              </motion.div>
-            </motion.div>
+                </a>
+              )}
+            </div>
           </div>
+        </div>
 
-          {/* Hover Border Glow */}
-          <motion.div
-            className="absolute -inset-1 rounded-2xl border border-accent-cyan/50 opacity-0 pointer-events-none"
-            animate={{
-              opacity: isHovered ? 1 : 0,
-              boxShadow: isHovered
-                ? '0 0 20px rgba(0, 242, 234, 0.3)'
-                : '0 0 0px rgba(0, 242, 234, 0)',
-            }}
-            transition={{ duration: 0.2 }}
+        {/* Right Content Area (Image) */}
+        <div className="w-full md:w-1/2 relative h-2/5 md:h-full bg-black overflow-hidden group order-1 md:order-2">
+          {!imageLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-[#0d0d14]">
+              <div className="w-10 h-10 border-2 border-white/20 border-t-accent-cyan rounded-full animate-spin" />
+            </div>
+          )}
+          <img
+            src={image}
+            alt={`${name} preview screenshot`}
+            onLoad={() => setImageLoaded(true)}
+            className={`w-full h-full object-cover transition-all duration-[1.5s] ease-[cubic-bezier(0.33,1,0.68,1)] transform ${
+              imageLoaded ? 'opacity-100 scale-100 group-hover:scale-105' : 'opacity-0 scale-110'
+            }`}
           />
-        </motion.div>
+          {/* Overlay fade linking text area with image smoothly */}
+          <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#0d0d14] via-[#0d0d14]/40 to-transparent pointer-events-none" />
+          
+          {/* Vignette on hover */}
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+        </div>
       </motion.div>
-    );
-  }
-);
+    </div>
+  );
+};
 
-const Projects = () => {
+const Works = () => {
   const { useRealtime, loading } = useFirestore('projects');
   const [projects, setProjects] = useState<TProject[]>([]);
-  const [selectedProject, setSelectedProject] = useState<number | null>(null);
 
   useRealtime(data => {
     setProjects(data as unknown as TProject[]);
   });
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  if (loading) return <div className="text-white text-center">Loading Projects...</div>;
+  if (loading)
+    return (
+      <div className="text-white text-center py-20 min-h-[50vh] flex flex-col items-center justify-center">
+        <div className="w-16 h-16 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mb-6 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
+        <p className="text-2xl font-light text-secondary">Summoning Projects...</p>
+      </div>
+    );
 
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      variants={containerVariants}
-    >
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        viewport={{ once: true }}
-      >
-        <Header {...config.sections.works} />
-      </motion.div>
+    <div className="relative z-10 w-full">
+      <div className="pb-10 pt-20">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6 }}
+        >
+          <Header {...config.sections.works} />
 
-      {/* Description */}
-      <motion.div
-        className="mt-8"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-        viewport={{ once: true }}
-      >
-        <p className="text-[17px] leading-[30px] text-secondary text-justify">{config.sections.works.content}</p>
-      </motion.div>
+          <div className="mt-8 max-w-4xl">
+            <p className="text-secondary text-lg leading-relaxed text-justify rounded-xl bg-white/5 border border-white/10 border-l-4 border-l-accent-cyan px-6 py-5">
+              {config.sections.works.content}
+            </p>
+          </div>
+        </motion.div>
+      </div>
 
-      {/* Projects Grid - 2 Column Layout */}
-      <motion.div
-        className="mt-20 grid grid-cols-1 lg:grid-cols-2 gap-8"
-        variants={containerVariants}
-      >
+      {/* 
+        The Stack Container 
+        By adding margin-top, it distances the first card from the header.
+        The bottom padding ensures the user can scroll fully past the last card before stopping.
+      */}
+      <div className="relative mt-10 w-full mb-[20vh]">
         {projects.map((project, index) => (
           <ProjectCard
-            key={`project-${index}`}
+            key={project.name || index}
+            project={project}
             index={index}
-            onSelect={() => setSelectedProject(selectedProject === index ? null : index)}
-            {...project}
+            total={projects.length}
           />
         ))}
-      </motion.div>
-
-      {/* Project Details Modal */}
-      <AnimatePresence>
-        {selectedProject !== null && projects[selectedProject] && (
-          <motion.div
-            className="fixed inset-0 bg-black/95 backdrop-blur-xl z-[9999] flex items-center justify-center p-4 overflow-y-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => {
-              setSelectedProject(null);
-              document.body.style.overflow = 'auto';
-              document.querySelector('nav')?.classList.remove('hidden');
-            }}
-            onAnimationComplete={() => {
-              if (selectedProject !== null) {
-                document.body.style.overflow = 'hidden';
-                document.querySelector('nav')?.classList.add('hidden');
-              }
-            }}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-title"
-            aria-describedby="modal-description"
-          >
-            <motion.div
-              className="relative bg-gradient-to-br from-white/20 via-white/10 to-white/5 rounded-3xl p-12 max-w-5xl w-full border border-white/30 backdrop-blur-2xl shadow-2xl shadow-accent-cyan/40 my-12"
-              initial={{ scale: 0.7, opacity: 0, y: 40 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.7, opacity: 0, y: 40 }}
-              transition={{ duration: 0.4, type: 'spring', stiffness: 150 }}
-              onClick={e => e.stopPropagation()}
-            >
-              {/* Close Button */}
-              <motion.button
-                onClick={() => setSelectedProject(null)}
-                className="absolute top-8 right-8 text-white/60 hover:text-accent-cyan transition-colors z-10 p-3 hover:bg-white/10 rounded-full"
-                whileHover={{ scale: 1.2, rotate: 90 }}
-                transition={{ duration: 0.2 }}
-                aria-label="Close project details modal"
-              >
-                <span className="text-3xl font-light" aria-hidden="true">
-                  ✕
-                </span>
-              </motion.button>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                {/* Image Section */}
-                <motion.div
-                  className="relative overflow-hidden rounded-2xl shadow-xl shadow-accent-cyan/30"
-                  layoutId={`modal-image-${selectedProject}`}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <div className="relative h-[450px]">
-                    <img
-                      src={projects[selectedProject].image}
-                      alt={`${projects[selectedProject].name} project detailed screenshot showing ${projects[selectedProject].description}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <div
-                      className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"
-                      aria-hidden="true"
-                    />
-                  </div>
-                </motion.div>
-
-                {/* Content Section */}
-                <motion.div
-                  className="flex flex-col justify-between space-y-8"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.15 }}
-                >
-                  {/* Title & Description */}
-                  <div>
-                    <motion.h2
-                      id="modal-title"
-                      className="text-5xl font-bold text-white mb-4"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
-                    >
-                      {projects[selectedProject].name}
-                    </motion.h2>
-                    <motion.p
-                      id="modal-description"
-                      className="text-secondary/90 text-lg leading-relaxed"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.25 }}
-                    >
-                      {projects[selectedProject].description}
-                    </motion.p>
-                  </div>
-
-                  {/* Technologies */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <h3 className="text-sm font-bold text-accent-cyan/80 mb-4 uppercase tracking-widest">
-                      Tech Stack
-                    </h3>
-                    <div className="flex flex-wrap gap-3">
-                      {projects[selectedProject].tags.map((tag, idx) => (
-                        <motion.span
-                          key={tag.name}
-                          className={`px-4 py-2 rounded-lg font-medium ${tag.color} bg-white/10 border border-white/20 text-sm`}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.35 + idx * 0.05 }}
-                          whileHover={{ scale: 1.08, backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
-                        >
-                          {tag.name}
-                        </motion.span>
-                      ))}
-                    </div>
-                  </motion.div>
-
-                  {/* CTA Button */}
-                  <motion.a
-                    href={projects[selectedProject].sourceCodeLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-3 bg-gradient-to-r from-accent-cyan via-purple-500 to-accent-pink hover:shadow-2xl hover:shadow-accent-cyan/60 text-white/90 px-8 py-4 rounded-xl font-bold transition-all border border-accent-cyan/40 group text-lg"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    whileHover={{ scale: 1.08, y: -3 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Github size={24} className="group-hover:rotate-12 transition-transform" />
-                    <span>View on GitHub</span>
-                    <ArrowRight
-                      size={20}
-                      className="group-hover:translate-x-2 transition-transform"
-                    />
-                  </motion.a>
-                  {projects[selectedProject].demoLink && (
-                    <motion.a
-                      href={projects[selectedProject].demoLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:shadow-2xl hover:shadow-purple-500/60 text-white/90 px-8 py-4 rounded-xl font-bold transition-all border border-purple-500/40 group text-lg"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.45 }}
-                      whileHover={{ scale: 1.08, y: -3 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <ExternalLink size={24} className="group-hover:rotate-12 transition-transform" />
-                      <span>Live Demo</span>
-                    </motion.a>
-                  )}
-                </motion.div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+      </div>
+    </div>
   );
 };
 
-export default SectionWrapper(Projects, 'projects');
+export default SectionWrapper(Works, 'projects');

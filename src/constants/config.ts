@@ -85,6 +85,7 @@ export const config: TConfig = {
     education: {
       p: 'My education',
       h2: 'Education.',
+      content: `My academic journey has equipped me with a strong foundation in computer science, analytical thinking, and problem-solving. From foundational programming to advanced data systems, my education has consistently shaped my ability to design and deliver efficient, data-driven solutions.`,
     },
     works: {
       p: 'My work',

@@ -47,6 +47,22 @@ html {
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
+/* Unified section description style — dark card with cyan accent left border + full justify */
+.section-description {
+  color: #9090a0;
+  font-size: 1.125rem;
+  line-height: 1.75;
+  text-align: justify;
+  text-justify: auto;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 4px solid #00f2ea;
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
 .admin-glass {
   background: rgba(30, 41, 59, 0.7);
   /* Slate 800 with opacity */

@@ -56,7 +56,7 @@ const About = () => {
         transition={{ duration: 0.4, delay: 0.2 }}
         viewport={{ once: true }}
       >
-        <p className="text-secondary text-[17px] leading-[30px] text-justify">
+        <p className="section-description">
           {sectionData.content}
         </p>
       </motion.div>

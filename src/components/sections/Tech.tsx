@@ -147,7 +147,7 @@ const Tech = () => {
         transition={{ duration: 0.4, delay: 0.2 }}
         viewport={{ once: true }}
       >
-        <p className="text-secondary mt-4 text-[17px] leading-[30px] text-justify">
+        <p className="section-description">
           {config.sections.skills.content}
         </p>
       </motion.div>
