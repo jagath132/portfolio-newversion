@@ -1,5 +1,3 @@
 {
-  "buildCommand": "npm run build:portfolio",
-  "outputDirectory": "dist",
   "cleanUrls": true
 }
