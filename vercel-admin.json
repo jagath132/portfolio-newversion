@@ -1,8 +1,5 @@
 {
   "buildCommand": "npm run build:admin",
   "outputDirectory": "dist-admin",
-  "cleanUrls": true,
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  "cleanUrls": true
 }
