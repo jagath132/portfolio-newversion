@@ -116,9 +116,40 @@ async function startServer() {
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: 'spa',
+      appType: 'custom',
     });
     app.use(vite.middlewares);
+
+    // Custom Dev Server SPA Routing for Admin Panel
+    app.get('/admin*', async (req, res, next) => {
+      try {
+        const url = req.originalUrl;
+        const templatePath = path.resolve(process.cwd(), 'admin/index.html');
+        const template = await fs.promises.readFile(templatePath, 'utf-8');
+        const html = await vite.transformIndexHtml(url, template);
+        res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+      } catch (e) {
+        vite.ssrFixStacktrace(e as Error);
+        next(e);
+      }
+    });
+
+    // Custom Dev Server SPA Routing for Main Portfolio
+    app.get('*', async (req, res, next) => {
+      if (req.originalUrl.startsWith('/api')) {
+        return next();
+      }
+      try {
+        const url = req.originalUrl;
+        const templatePath = path.resolve(process.cwd(), 'index.html');
+        const template = await fs.promises.readFile(templatePath, 'utf-8');
+        const html = await vite.transformIndexHtml(url, template);
+        res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+      } catch (e) {
+        vite.ssrFixStacktrace(e as Error);
+        next(e);
+      }
+    });
   } else {
     const distPath = path.join(process.cwd(), 'dist');
     // Serve admin statically first
