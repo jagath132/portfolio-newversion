@@ -7,7 +7,7 @@
     "dev": "tsx server.ts",
     "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "build:admin": "vite build --config vite.admin.config.ts",
-    "build:portfolio": "vite build",
+    "build:portfolio": "vite build --config vite.portfolio.config.ts",
     "start": "node dist/server.cjs",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
