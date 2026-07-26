@@ -1,0 +1,236 @@
+{
+  "personalInfo": {
+    "name": "JAGATH R.",
+    "title": "DATA ANALYST | AUTOMATION ENTHUSIAST",
+    "shortBio": "Dedicated data analyst and detail-driven professional, specializing in SQL, Python, Power BI, and advanced process automation tools like Power Apps and n8n.",
+    "fullAbout": "I am a dedicated data analyst and detail-driven professional, specializing in SQL, Python, Power BI, and advanced process automation tools like Power Apps and n8n. My focus is on transforming raw data into strategic insights, supporting business and cybersecurity operations with strong foundations in data integration, workflow automation, and testing across diverse environments. I bridge the gap between technical solutions and business objectives.",
+    "highlights": [
+      { "label": "Process Automation", "value": "15+ Workflows" },
+      { "label": "Data Accuracy", "value": "99.8%" },
+      { "label": "Dashboard Reports", "value": "30+ Built" },
+      { "label": "Core Internships", "value": "4 Completed" }
+    ],
+    "socials": {
+      "github": "https://github.com",
+      "linkedin": "https://linkedin.com",
+      "twitter": "https://x.com",
+      "email": "mailto:jagath.r@example.com",
+      "telegram": "https://t.me"
+    }
+  },
+  "educationData": [
+    {
+      "id": "msc",
+      "degree": "MASTER OF SCIENCE IN COMPUTER SCIENCE",
+      "field": "Computer Science & Data Analytics",
+      "duration": "2023 - 2025",
+      "institution": "THE NEW COLLEGE",
+      "description": "Advanced coursework in data analytics, machine learning, database management systems, and enterprise process automation.",
+      "achievements": [
+        "Specialized in SQL database optimization and statistical data modeling",
+        "Constructed automated predictive analytics pipelines for coursework projects",
+        "Graduated with First Class Honors in Computer Science"
+      ]
+    },
+    {
+      "id": "bsc",
+      "degree": "BACHELOR OF SCIENCE IN COMPUTER SCIENCE",
+      "field": "Computer Science",
+      "duration": "2020 - 2023",
+      "institution": "CHENNAI NATIONAL ARTS & SCIENCE COLLEGE",
+      "description": "Foundational computer science, relational database management (RDBMS), software development life cycle (SDLC), and logic design.",
+      "achievements": [
+        "Developed foundational skills in Python, Java, and Relational Database Systems",
+        "Led group project on student performance tracking and automated reporting"
+      ]
+    }
+  ],
+  "skillsCategories": [
+    {
+      "id": "prog",
+      "category": "PROGRAMMING LANGUAGES",
+      "skills": [
+        { "name": "Python", "iconName": "FileCode2", "level": 90, "color": "#3776AB" },
+        { "name": "SQL", "iconName": "Database", "level": 92, "color": "#4479A1" },
+        { "name": "Java", "iconName": "Coffee", "level": 80, "color": "#5382A1" }
+      ]
+    },
+    {
+      "id": "analytics",
+      "category": "DATA ANALYTICS & VISUALIZATION",
+      "skills": [
+        { "name": "Power BI", "iconName": "BarChart3", "level": 95, "color": "#F2C811" },
+        { "name": "Excel", "iconName": "FileSpreadsheet", "level": 90, "color": "#217346" },
+        { "name": "Tableau", "iconName": "PieChart", "level": 85, "color": "#E97627" }
+      ]
+    },
+    {
+      "id": "automation",
+      "category": "AUTOMATION & PROCESS OPTIMIZATION",
+      "skills": [
+        { "name": "n8n", "iconName": "Workflow", "level": 92, "color": "#FF6D5A" },
+        { "name": "Power Automate", "iconName": "Zap", "level": 88, "color": "#0078D4" },
+        { "name": "Selenium", "iconName": "CheckCircle2", "level": 85, "color": "#43B02A" }
+      ]
+    },
+    {
+      "id": "testing",
+      "category": "TESTING & QA",
+      "skills": [
+        { "name": "Selenium", "iconName": "ShieldCheck", "level": 85, "color": "#43B02A" },
+        { "name": "Manual Testing", "iconName": "SearchCheck", "level": 90, "color": "#00B4D8" }
+      ]
+    },
+    {
+      "id": "version",
+      "category": "VERSION CONTROL & DEVELOPMENT",
+      "skills": [
+        { "name": "Git", "iconName": "GitBranch", "level": 88, "color": "#F05032" },
+        { "name": "GitHub", "iconName": "Github", "level": 90, "color": "#FFFFFF" },
+        { "name": "CI/CD", "iconName": "Layers", "level": 82, "color": "#00ACC1" }
+      ]
+    },
+    {
+      "id": "zoho",
+      "category": "ZOHO ECOSYSTEM",
+      "skills": [
+        { "name": "Zoho CRM", "iconName": "Briefcase", "level": 86, "color": "#C8252C" },
+        { "name": "Zoho Analytics", "iconName": "TrendingUp", "level": 88, "color": "#2C83C9" }
+      ]
+    }
+  ],
+  "experienceData": [
+    {
+      "id": "exp1",
+      "period": "AUG 2025 - PRESENT",
+      "role": "PROCESS OPTIMIZATION INTERN",
+      "company": "HOUSE OF ACCOUNTANTS",
+      "summary": "Gained experience with workflow automation, APIs, and process optimization. Automated financial workflows with n8n, reducing manual processes.",
+      "bulletPoints": [
+        "Designed and deployed automated n8n workflow pipelines to ingest financial data from multiple API endpoints",
+        "Reduced daily manual data entry time by over 60% through automated webhook integrations",
+        "Collaborated with accounting leads to standardize financial audit trail logging and exception reporting"
+      ],
+      "techStack": ["n8n", "APIs", "REST Webhooks", "Process Optimization", "Excel"]
+    },
+    {
+      "id": "exp2",
+      "period": "JUN 2025 - AUG 2025",
+      "role": "AUTOMATION TESTING INTERN",
+      "company": "FASTACK.AI",
+      "summary": "Contributed to LucaGPT, an AI assistant for Tally Prime users. Designed and automated test scripts using Selenium with Java. Performed functional, regression, and UI testing.",
+      "bulletPoints": [
+        "Created end-to-end Selenium with Java automation suites to validate LucaGPT AI assistant responses against Tally Prime accounting scenarios",
+        "Executed regression and functional test cases to guarantee high UI fidelity and data accuracy during system updates",
+        "Documented and tracked software defects in JIRA, accelerating defect resolution times by 25%"
+      ],
+      "techStack": ["Selenium", "Java", "LucaGPT AI", "Functional Testing", "JIRA"]
+    },
+    {
+      "id": "exp3",
+      "period": "JAN 2025 - JUN 2025",
+      "role": "DATA ANALYST INTERN",
+      "company": "INTELIZIGN",
+      "summary": "Collaborated with the data analytics team to understand internal workflows. Developed dashboards to track cybersecurity incidents across multiple sources.",
+      "bulletPoints": [
+        "Built interactive Power BI dashboards summarizing multi-source cybersecurity incidents and operational metrics",
+        "Wrote optimized SQL queries to aggregate log records from distributed security servers",
+        "Presented monthly risk insights to senior engineering managers to support threat response strategies"
+      ],
+      "techStack": ["Power BI", "SQL", "Data Analytics", "Dashboards", "Security Logs"]
+    },
+    {
+      "id": "exp4",
+      "period": "JUL 2024 - AUG 2024",
+      "role": "SOC OPERATIONS INTERN",
+      "company": "L&T TECHNOLOGY SERVICES",
+      "summary": "Developed a clear understanding of SOC workflows and operations. Explored common cyber threats, attack vectors, and incident prioritization.",
+      "bulletPoints": [
+        "Monitored Security Operations Center (SOC) alert feeds and analyzed attack vector patterns",
+        "Assisted in constructing threat severity matrices to improve ticket triage efficiency",
+        "Gained hands-on experience in log analysis and security incident response frameworks"
+      ],
+      "techStack": ["SOC Workflows", "Incident Prioritization", "Cybersecurity", "Log Analysis"]
+    }
+  ],
+  "projectsData": [
+    {
+      "id": "sales-analysis",
+      "title": "SALES ANALYSIS DASHBOARD",
+      "subtitle": "Interactive Revenue & Performance Visualizer",
+      "tags": ["Power BI", "Excel", "Data Analysis"],
+      "image": "/images/sales_dashboard_1785041898997.jpg",
+      "description": "Comprehensive Power BI sales analysis dashboard tracking enterprise revenue trends, regional performance, product margins, and customer demographic insights.",
+      "fullDetails": {
+        "overview": "This project transforms complex multi-region transactional sales data into a dynamic executive dashboard. Users can filter by time period, product category, customer segment, and region to reveal profitability drivers and sales pipeline bottlenecks.",
+        "keyFeatures": [
+          "Interactive dynamic filtering across region, product family, and quarterly performance",
+          "DAX measures calculating Year-over-Year (YoY) revenue growth and gross profit margins",
+          "Automated Excel data refresh pipeline connected to central SQL server",
+          "Executive KPI cards highlighting top-performing products and underperforming territories"
+        ],
+        "metrics": [
+          { "label": "Revenue Analyzed", "value": "$2.4M+" },
+          { "label": "Report Load Speed", "value": "<1.2s" },
+          { "label": "Data Points Included", "value": "150,000+" },
+          { "label": "Time Saved / Week", "value": "12 Hours" }
+        ],
+        "architecture": "Excel -> SQL Server -> Power BI DAX Engine -> Executive View"
+      },
+      "demoUrl": "#",
+      "githubUrl": "#"
+    },
+    {
+      "id": "logistics-otif",
+      "title": "LOGISTICS ANALYTICS - OTIF",
+      "subtitle": "Supply Chain & On-Time In-Full Monitor",
+      "tags": ["Power BI", "SQL", "Data Visualization"],
+      "image": "/images/logistics_analytics_1785041914704.jpg",
+      "description": "End-to-end supply chain On-Time In-Full (OTIF) analytics solution evaluating dispatch efficiency, transit delay patterns, and warehouse fulfillment SLA compliance.",
+      "fullDetails": {
+        "overview": "A dedicated supply chain intelligence dashboard built for logistics operators. It tracks shipment trajectories from warehouse dispatch to end destination, identifying root causes for delivery delays and inventory stockouts.",
+        "keyFeatures": [
+          "Real-time OTIF percentage calculation against strict customer SLA thresholds",
+          "Root-cause delay categorization (Warehouse Hold, Transit Delay, Customs Clearance)",
+          "Carrier reliability scoring matrix comparing external 3PL logistics vendors",
+          "Geographic heat map highlighting high-congestion transport corridors"
+        ],
+        "metrics": [
+          { "label": "OTIF Improvement", "value": "+14.2%" },
+          { "label": "Shipments Tracked", "value": "45,000+" },
+          { "label": "Carrier Rating Score", "value": "4.8 / 5" },
+          { "label": "SLA Breach Alerts", "value": "Automated" }
+        ],
+        "architecture": "PostgreSQL -> Python ETL -> Power BI Gateway -> Operational Dashboard"
+      },
+      "demoUrl": "#",
+      "githubUrl": "#"
+    },
+    {
+      "id": "cybersecurity-tracker",
+      "title": "CYBERSECURITY INCIDENT TRACKER",
+      "subtitle": "SOC Log Collector & Automated Threat Alerting",
+      "tags": ["Python", "Data Integration", "Dashboard"],
+      "image": "/images/cybersecurity_tracker_1785041929431.jpg",
+      "description": "High-throughput security incident monitoring platform aggregating multi-source SOC logs, assessing threat severity levels, and generating automated team notifications.",
+      "fullDetails": {
+        "overview": "A SOC security monitoring system developed using Python scripts for API log collection, SQL database indexing, and an intuitive visual dashboard for threat triage and incident escalation.",
+        "keyFeatures": [
+          "Automated REST API integration ingesting syslog streams from firewall and endpoint monitors",
+          "Threat severity classifier categorizing incidents (Critical, High, Medium, Low)",
+          "Automated n8n webhook alerts notifying SOC analysts on Slack/Teams during critical breaches",
+          "Historical incident trend analysis to identify recurring attack vectors"
+        ],
+        "metrics": [
+          { "label": "MTTR Reduction", "value": "35%" },
+          { "label": "Daily Logs Processed", "value": "500,000+" },
+          { "label": "Alert Accuracy", "value": "98.5%" },
+          { "label": "Incident Triage", "value": "Real-time" }
+        ],
+        "architecture": "Syslog Streams -> Python Processing -> SQL DB -> Custom Dashboard + n8n Webhooks"
+      },
+      "demoUrl": "#",
+      "githubUrl": "#"
+    }
+  ]
+}
