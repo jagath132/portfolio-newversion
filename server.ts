@@ -53,8 +53,19 @@ async function startServer() {
   }
 
   // API Route: Get Portfolio Data
-  app.get('/api/portfolio', async (_req, res) => {
+  app.get('/api/portfolio', async (req, res) => {
     try {
+      const authHeader = req.headers.authorization;
+      const expectedPasscode = process.env.ADMIN_PASSCODE || 'admin';
+      
+      if (authHeader && expectedPasscode) {
+        const token = authHeader.split(' ')[1];
+        if (!token || token !== expectedPasscode) {
+          res.status(401).json({ error: 'Unauthorized: Invalid passcode' });
+          return;
+        }
+      }
+
       const data = await readPortfolioData();
       res.json(data);
     } catch (error) {
