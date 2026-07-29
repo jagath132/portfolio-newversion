@@ -15,7 +15,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, '.'),
     },
   },
-  root: path.resolve(__dirname, 'admin'),
+  root: path.resolve(__dirname),
   publicDir: path.resolve(__dirname, 'public'),
   build: {
     outDir: path.resolve(__dirname, 'dist-admin'),
