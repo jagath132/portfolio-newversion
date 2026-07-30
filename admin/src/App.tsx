@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import * as Icons from 'lucide-react';
 import {
   Lock,
   Unlock,
@@ -25,9 +26,25 @@ import {
   ShieldCheck,
   Globe,
   Sliders,
-  CheckCircle2
+  CheckCircle2,
+  X,
+  Search,
+  Copy,
+  ExternalLink,
+  HelpCircle,
+  Command,
+  LayoutGrid
 } from 'lucide-react';
 import { EducationItem, SkillCategory, ExperienceItem, ProjectItem } from '../../src/types';
+
+const POPULAR_SKILL_ICONS = [
+  'FileCode2', 'Database', 'Coffee', 'BarChart3', 'FileSpreadsheet', 'PieChart', 
+  'Workflow', 'Zap', 'CheckCircle2', 'ShieldCheck', 'SearchCheck', 'GitBranch', 
+  'Github', 'Layers', 'Briefcase', 'TrendingUp', 'Terminal', 'Cpu', 'Code', 
+  'Flame', 'Server', 'Globe', 'Sliders', 'User', 'Lock', 'Box', 'Boxes', 
+  'FileJson', 'Binary', 'Compass', 'Activity', 'Cloud', 'Layout', 'Smartphone', 
+  'Sparkles', 'Wrench', 'Settings', 'FolderGit2', 'BookOpen', 'Award'
+];
 
 interface PortfolioData {
   personalInfo: {
@@ -79,7 +96,23 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'info' | 'skills' | 'education' | 'experience' | 'projects'>('info');
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
-  // Check LocalStorage for Passcode on Mount
+  const [showIconModal, setShowIconModal] = useState<boolean>(false);
+  const [iconSearch, setIconSearch] = useState<string>('');
+  const [copiedIcon, setCopiedIcon] = useState<string>('');
+  const [targetSkillForIcon, setTargetSkillForIcon] = useState<{ catId: string; skIdx: number } | null>(null);
+
+  const handleSelectIcon = (iconName: string) => {
+    if (targetSkillForIcon) {
+      handleUpdateSkill(targetSkillForIcon.catId, targetSkillForIcon.skIdx, 'iconName', iconName);
+      setTargetSkillForIcon(null);
+      setShowIconModal(false);
+    } else {
+      navigator.clipboard.writeText(iconName);
+      setCopiedIcon(iconName);
+      setTimeout(() => setCopiedIcon(''), 2500);
+    }
+  };
+
   useEffect(() => {
     const savedPasscode = localStorage.getItem('portfolio_admin_passcode');
     if (savedPasscode) {
@@ -89,7 +122,6 @@ export default function App() {
     }
   }, []);
 
-  // Check if data is dirty (modified)
   const isDirty = JSON.stringify(data) !== JSON.stringify(originalData);
 
   const verifyPasscode = async (code: string) => {
@@ -165,7 +197,6 @@ export default function App() {
     }
   };
 
-  // Helper state updates
   const updatePersonalInfo = (field: string, value: any) => {
     setData(prev => ({
       ...prev,
@@ -189,7 +220,6 @@ export default function App() {
     }));
   };
 
-  // Highlights handlers
   const handleAddHighlight = () => {
     setData(prev => ({
       ...prev,
@@ -211,7 +241,6 @@ export default function App() {
     updatePersonalInfo('highlights', updatedHighlights);
   };
 
-  // Education handlers
   const handleAddEducation = () => {
     const newItem: EducationItem = {
       id: Math.random().toString(36).substr(2, 9),
@@ -259,7 +288,6 @@ export default function App() {
     setData(prev => ({ ...prev, educationData: list }));
   };
 
-  // Skills handlers
   const handleAddSkillCategory = () => {
     const newCat: SkillCategory = {
       id: Math.random().toString(36).substr(2, 9),
@@ -296,7 +324,7 @@ export default function App() {
         if (cat.id === catId) {
           return {
             ...cat,
-            skills: [...cat.skills, { name: '', iconName: 'FileCode2', level: 80, color: '#06B6D4' }]
+            skills: [...cat.skills, { name: '', iconName: 'FileCode2', level: 80, color: '#4F46E5' }]
           };
         }
         return cat;
@@ -338,7 +366,6 @@ export default function App() {
     setExpandedCategories(prev => ({ ...prev, [catId]: !prev[catId] }));
   };
 
-  // Experience handlers
   const handleAddExperience = () => {
     const newItem: ExperienceItem = {
       id: Math.random().toString(36).substr(2, 9),
@@ -386,7 +413,6 @@ export default function App() {
     setData(prev => ({ ...prev, experienceData: list }));
   };
 
-  // Projects handlers
   const handleAddProject = () => {
     const newItem: ProjectItem = {
       id: Math.random().toString(36).substr(2, 9),
@@ -473,32 +499,32 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#030712] flex flex-col items-center justify-center text-slate-100 font-sans">
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center text-slate-800 font-sans">
         <div className="relative flex items-center justify-center">
-          <div className="w-20 h-20 rounded-full border-2 border-dashed border-cyan-400 animate-spin"></div>
-          <Loader2 className="w-8 h-8 text-cyan-400 animate-spin absolute" />
+          <div className="w-16 h-16 rounded-full border-4 border-slate-200 border-t-indigo-600 animate-spin"></div>
+          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin absolute" />
         </div>
-        <p className="text-xs font-bold tracking-widest text-cyan-300 mt-6 uppercase">Initializing Cyber Portal...</p>
+        <p className="text-xs font-extrabold tracking-widest text-indigo-600 mt-6 uppercase">Loading Control Studio...</p>
       </div>
     );
   }
 
-  // PASSCODE AUTHENTICATION SCREEN (NEON GLASSMISM THEME)
+  // PASSCODE AUTHENTICATION GATE (CLEAN LIGHT THEME)
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4 relative overflow-hidden font-sans select-none">
-        {/* Ambient Glowing Background Orbs */}
-        <div className="absolute top-1/4 left-1/3 -translate-x-1/2 w-[550px] h-[350px] bg-cyan-600/15 rounded-full blur-[140px] pointer-events-none"></div>
-        <div className="absolute bottom-1/4 right-1/3 w-[450px] h-[300px] bg-indigo-600/15 rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex items-center justify-center px-4 relative overflow-hidden font-sans select-none">
+        {/* Soft Pastel Ambient Glows */}
+        <div className="absolute top-1/4 left-1/3 -translate-x-1/2 w-[550px] h-[350px] bg-indigo-200/50 rounded-full blur-[140px] pointer-events-none"></div>
+        <div className="absolute bottom-1/4 right-1/3 w-[450px] h-[300px] bg-sky-200/50 rounded-full blur-[140px] pointer-events-none"></div>
 
-        <div className="relative z-10 w-full max-w-md bg-slate-900/80 border-2 border-cyan-500/30 rounded-3xl p-8 sm:p-10 backdrop-blur-2xl shadow-[0_0_50px_rgba(6,182,212,0.15)]">
+        <div className="relative z-10 w-full max-w-md bg-white/95 border border-slate-200/90 rounded-3xl p-8 sm:p-10 backdrop-blur-2xl shadow-2xl shadow-slate-300/60">
           <div className="text-center space-y-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-950 to-slate-900 border-2 border-cyan-400 flex items-center justify-center mx-auto shadow-[0_0_25px_rgba(6,182,212,0.4)] text-cyan-300">
-              <Lock className="w-7 h-7 animate-pulse" />
+            <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center mx-auto shadow-md text-indigo-600">
+              <Lock className="w-7 h-7 animate-pulse text-indigo-600" />
             </div>
             <div className="space-y-1">
-              <h2 className="text-2xl font-black tracking-wider text-white uppercase">ADMIN GATEWAY</h2>
-              <p className="text-xs text-cyan-300/80 font-bold tracking-widest uppercase">PORTFOLIO CONTROL CENTER</p>
+              <h2 className="text-2xl font-black tracking-wider text-slate-900 uppercase">ADMIN STUDIO</h2>
+              <p className="text-xs text-indigo-600 font-bold tracking-widest uppercase">PORTFOLIO CONTROL CENTER</p>
             </div>
             
             <form onSubmit={handleLogin} className="space-y-4 pt-2">
@@ -508,20 +534,20 @@ export default function App() {
                   placeholder="Enter passcode (e.g. admin)"
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
-                  className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 rounded-2xl py-3.5 pl-5 pr-5 text-sm text-white placeholder-slate-600 focus:outline-none transition-all shadow-inner"
+                  className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 rounded-2xl py-3.5 pl-5 pr-5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-all shadow-sm font-medium"
                 />
               </div>
               
               {authError && (
-                <div className="flex items-center justify-center gap-2 text-xs font-bold text-rose-300 bg-rose-950/40 border border-rose-500/30 py-2.5 rounded-xl">
-                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                <div className="flex items-center justify-center gap-2 text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 py-2.5 rounded-xl">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
                   <span>{authError}</span>
                 </div>
               )}
 
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-xs font-black tracking-widest text-slate-950 bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400 hover:brightness-110 transition-all shadow-[0_0_25px_rgba(6,182,212,0.5)] active:scale-98 cursor-pointer uppercase"
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-xs font-black tracking-widest text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/25 active:scale-98 cursor-pointer uppercase"
               >
                 <Unlock className="w-4 h-4" />
                 <span>UNLOCK DASHBOARD</span>
@@ -533,23 +559,23 @@ export default function App() {
     );
   }
 
-  // MAIN DASHBOARD LAYOUT (CYBER GLASSMORPHIC THEME)
+  // MAIN DASHBOARD LAYOUT (CLEAN LIGHT STUDIO GLASS THEME)
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col relative font-sans">
-      {/* Ambient Lighting Orbs */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[300px] bg-cyan-600/10 rounded-full blur-[160px] pointer-events-none"></div>
-      <div className="absolute bottom-0 right-1/4 w-[600px] h-[300px] bg-indigo-600/10 rounded-full blur-[160px] pointer-events-none"></div>
+    <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col relative font-sans">
+      {/* Subtle Pastel Ambient Lighting */}
+      <div className="absolute top-0 left-1/4 w-[700px] h-[350px] bg-indigo-100/60 rounded-full blur-[160px] pointer-events-none"></div>
+      <div className="absolute bottom-0 right-1/4 w-[600px] h-[350px] bg-sky-100/60 rounded-full blur-[160px] pointer-events-none"></div>
 
-      {/* Floating Header Bar */}
-      <header className="sticky top-0 z-50 bg-[#030712]/80 backdrop-blur-xl border-b border-cyan-500/20 px-6 py-4 shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+      {/* Floating White Header Bar */}
+      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200/90 px-6 py-4 shadow-sm">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 rounded-full bg-cyan-400 animate-ping shadow-[0_0_10px_#06b6d4]"></div>
-            <h1 className="text-lg font-black tracking-widest bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent uppercase">
-              {data.personalInfo.name || 'PORTFOLIO'} ADMIN
+            <div className="w-3 h-3 rounded-full bg-indigo-600 animate-ping shadow-[0_0_10px_#4f46e5]"></div>
+            <h1 className="text-lg font-black tracking-widest bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-700 bg-clip-text text-transparent uppercase">
+              {data.personalInfo.name || 'PORTFOLIO'} STUDIO
             </h1>
             {isDirty && (
-              <span className="text-[10px] font-bold bg-amber-500/15 border border-amber-400/40 text-amber-300 px-2.5 py-0.5 rounded-md animate-pulse shadow-[0_0_12px_rgba(245,158,11,0.2)] tracking-wider">
+              <span className="text-[10px] font-bold bg-amber-50 border border-amber-300 text-amber-800 px-2.5 py-0.5 rounded-md animate-pulse shadow-sm tracking-wider">
                 UNSAVED CHANGES
               </span>
             )}
@@ -558,20 +584,20 @@ export default function App() {
           <div className="flex items-center gap-3">
             {/* Status alerts */}
             {saveStatus === 'saving' && (
-              <span className="flex items-center gap-1.5 text-xs text-cyan-300 font-bold bg-cyan-950/60 border border-cyan-500/40 px-3 py-1.5 rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.2)]">
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+              <span className="flex items-center gap-1.5 text-xs text-indigo-700 font-bold bg-indigo-50 border border-indigo-200 px-3 py-1.5 rounded-xl shadow-sm">
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600" />
                 <span>Saving...</span>
               </span>
             )}
             {saveStatus === 'saved' && (
-              <span className="flex items-center gap-1.5 text-xs text-emerald-300 font-bold bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="flex items-center gap-1.5 text-xs text-emerald-800 font-bold bg-emerald-50 border border-emerald-300 px-3 py-1.5 rounded-xl shadow-sm">
+                <Check className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Saved successfully!</span>
               </span>
             )}
             {saveStatus === 'failed' && (
-              <span className="flex items-center gap-1.5 text-xs text-rose-300 font-bold bg-rose-950/60 border border-rose-500/40 px-3 py-1.5 rounded-xl" title={errorMessage}>
-                <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
+              <span className="flex items-center gap-1.5 text-xs text-rose-700 font-bold bg-rose-50 border border-rose-300 px-3 py-1.5 rounded-xl" title={errorMessage}>
+                <AlertCircle className="w-3.5 h-3.5 text-rose-600" />
                 <span>Save failed</span>
               </span>
             )}
@@ -580,10 +606,10 @@ export default function App() {
             <button
               onClick={saveChanges}
               disabled={!isDirty || saveStatus === 'saving'}
-              className={`flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
                 isDirty && saveStatus !== 'saving'
-                  ? 'bg-gradient-to-r from-cyan-400 via-teal-300 to-cyan-400 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.5)] hover:shadow-[0_0_30px_rgba(6,182,212,0.8)] active:scale-95'
-                  : 'bg-slate-900/60 border border-slate-800 text-slate-500 cursor-not-allowed'
+                  ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20 active:scale-95'
+                  : 'bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed'
               }`}
             >
               <Save className="w-3.5 h-3.5" />
@@ -593,7 +619,7 @@ export default function App() {
             {/* Logout Button */}
             <button
               onClick={handleLogout}
-              className="p-2.5 rounded-xl bg-slate-900/80 border border-cyan-500/30 text-slate-400 hover:text-white hover:border-cyan-400 transition-all cursor-pointer shadow-md"
+              className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all cursor-pointer shadow-sm"
               title="Sign Out"
             >
               <LogOut className="w-4.5 h-4.5" />
@@ -621,11 +647,11 @@ export default function App() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-xs font-bold uppercase tracking-wider text-left transition-all shrink-0 cursor-pointer ${
                   isActive
-                    ? 'bg-slate-900/90 border-2 border-cyan-500/50 text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.25)] font-extrabold'
-                    : 'bg-slate-900/40 border border-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-900/70 hover:border-cyan-500/30'
+                    ? 'bg-white border-2 border-indigo-600 text-indigo-700 font-black shadow-md shadow-indigo-500/10'
+                    : 'bg-white/70 border border-slate-200/80 text-slate-600 hover:text-slate-900 hover:bg-white'
                 }`}
               >
-                <Icon className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
+                <Icon className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`} />
                 <span>{tab.label}</span>
               </button>
             );
@@ -633,64 +659,64 @@ export default function App() {
         </nav>
 
         {/* Tab Editor Main Container */}
-        <main className="flex-1 bg-slate-900/70 border-2 border-cyan-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-2xl shadow-[0_0_40px_rgba(6,182,212,0.1)] min-h-[500px]">
+        <main className="flex-1 bg-white/90 border border-slate-200/90 rounded-3xl p-6 md:p-8 backdrop-blur-xl shadow-xl shadow-slate-200/60 min-h-[500px]">
           
           {/* TAB 1: PERSONAL INFO */}
           {activeTab === 'info' && (
             <div className="space-y-6">
-              <div className="border-b border-cyan-500/20 pb-4">
-                <h3 className="text-lg font-black text-white uppercase tracking-wider flex items-center gap-2">
-                  <User className="w-5 h-5 text-cyan-400" />
+              <div className="border-b border-slate-200 pb-4">
+                <h3 className="text-lg font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <User className="w-5 h-5 text-indigo-600" />
                   <span>Personal Information</span>
                 </h3>
-                <p className="text-xs text-slate-400 font-medium mt-1">Manage main headings, statements, and contact profiles.</p>
+                <p className="text-xs text-slate-500 font-medium mt-1">Manage main headings, statements, and contact profiles.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Client Name</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Client Name</label>
                   <input
                     type="text"
                     value={data.personalInfo.name}
                     onChange={(e) => updatePersonalInfo('name', e.target.value)}
-                    className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none shadow-inner"
+                    className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none shadow-sm font-medium"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Professional Title</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Professional Title</label>
                   <input
                     type="text"
                     value={data.personalInfo.title}
                     onChange={(e) => updatePersonalInfo('title', e.target.value)}
-                    className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none shadow-inner"
+                    className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none shadow-sm font-medium"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Short Bio (Footer & Hero)</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Short Bio (Footer & Hero)</label>
                 <textarea
                   rows={2}
                   value={data.personalInfo.shortBio}
                   onChange={(e) => updatePersonalInfo('shortBio', e.target.value)}
-                  className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none resize-y shadow-inner"
+                  className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none resize-y shadow-sm font-medium"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Full About Biography</label>
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Full About Biography</label>
                 <textarea
                   rows={4}
                   value={data.personalInfo.fullAbout}
                   onChange={(e) => updatePersonalInfo('fullAbout', e.target.value)}
-                  className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none resize-y shadow-inner"
+                  className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none resize-y shadow-sm font-medium"
                 />
               </div>
 
               {/* Social Channels */}
-              <div className="border-t border-cyan-500/20 pt-6 space-y-4">
-                <h4 className="text-xs font-bold uppercase tracking-widest text-cyan-400 flex items-center gap-1.5">
+              <div className="border-t border-slate-200 pt-6 space-y-4">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-600 flex items-center gap-1.5">
                   <Share2 className="w-4 h-4" />
                   <span>Social Connections</span>
                 </h4>
@@ -703,12 +729,12 @@ export default function App() {
                     { key: 'email', label: 'Email Link (mailto:)' }
                   ].map(social => (
                     <div key={social.key} className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase">{social.label}</label>
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">{social.label}</label>
                       <input
                         type="text"
                         value={(data.personalInfo.socials as any)[social.key] || ''}
                         onChange={(e) => updateSocials(social.key, e.target.value)}
-                        className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                        className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                       />
                     </div>
                   ))}
@@ -716,15 +742,15 @@ export default function App() {
               </div>
 
               {/* Stat Highlights */}
-              <div className="border-t border-cyan-500/20 pt-6 space-y-4">
+              <div className="border-t border-slate-200 pt-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-cyan-400 flex items-center gap-1.5">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-indigo-600 flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4" />
                     <span>Profile Highlights</span>
                   </h4>
                   <button
                     onClick={handleAddHighlight}
-                    className="flex items-center gap-1 px-3.5 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider bg-cyan-950 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-900 transition-all cursor-pointer shadow-sm"
+                    className="flex items-center gap-1 px-3.5 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 transition-all cursor-pointer shadow-sm"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>ADD HIGHLIGHT</span>
@@ -740,26 +766,26 @@ export default function App() {
                           placeholder="Label (e.g. Data Accuracy)"
                           value={highlight.label}
                           onChange={(e) => handleUpdateHighlight(idx, 'label', e.target.value)}
-                          className="bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="bg-slate-50 border border-slate-300 focus:border-indigo-600 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                         <input
                           type="text"
                           placeholder="Value (e.g. 99.8%)"
                           value={highlight.value}
                           onChange={(e) => handleUpdateHighlight(idx, 'value', e.target.value)}
-                          className="bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="bg-slate-50 border border-slate-300 focus:border-indigo-600 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                       <button
                         onClick={() => handleDeleteHighlight(idx)}
-                        className="p-2.5 rounded-xl border border-rose-500/30 text-rose-400 hover:text-white hover:bg-rose-950/40 hover:border-rose-400 transition-all cursor-pointer shadow-sm"
+                        className="p-2.5 rounded-xl border border-rose-200 text-rose-600 hover:text-white hover:bg-rose-600 transition-all cursor-pointer shadow-sm"
                       >
                         <Trash2 className="w-4.5 h-4.5" />
                       </button>
                     </div>
                   ))}
                   {data.personalInfo.highlights.length === 0 && (
-                    <p className="text-xs text-slate-500 italic text-center py-2">No highlights defined. Click "Add Highlight" above.</p>
+                    <p className="text-xs text-slate-400 italic text-center py-2">No highlights defined. Click "Add Highlight" above.</p>
                   )}
                 </div>
               </div>
@@ -769,43 +795,55 @@ export default function App() {
           {/* TAB 2: SKILLS CATEGORIES */}
           {activeTab === 'skills' && (
             <div className="space-y-6">
-              <div className="border-b border-cyan-500/20 pb-4 flex items-center justify-between">
+              <div className="border-b border-slate-200 pb-4 flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-black text-white uppercase tracking-wider flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-cyan-400" />
+                  <h3 className="text-lg font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-indigo-600" />
                     <span>Skills Matrix</span>
                   </h3>
-                  <p className="text-xs text-slate-400 font-medium mt-1">Create skill categories and assign specific skill cards.</p>
+                  <p className="text-xs text-slate-500 font-medium mt-1">Create skill categories and assign specific skill cards.</p>
                 </div>
-                <button
-                  onClick={handleAddSkillCategory}
-                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider text-slate-950 bg-gradient-to-r from-cyan-400 to-teal-300 hover:from-cyan-300 hover:to-teal-200 transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)] cursor-pointer"
-                >
-                  <FolderPlus className="w-4 h-4" />
-                  <span>NEW CATEGORY</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setTargetSkillForIcon(null);
+                      setShowIconModal(true);
+                    }}
+                    className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition-all cursor-pointer shadow-sm"
+                  >
+                    <Sparkles className="w-4 h-4 text-indigo-600" />
+                    <span>BROWSE ICONS</span>
+                  </button>
+                  <button
+                    onClick={handleAddSkillCategory}
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md shadow-indigo-500/20 cursor-pointer"
+                  >
+                    <FolderPlus className="w-4 h-4" />
+                    <span>NEW CATEGORY</span>
+                  </button>
+                </div>
               </div>
 
               <div className="space-y-4">
                 {data.skillsCategories.map((category) => {
                   const isExpanded = Boolean(expandedCategories[category.id]);
                   return (
-                    <div key={category.id} className="border border-cyan-500/20 bg-slate-950/60 rounded-2xl overflow-hidden transition-all shadow-md">
+                    <div key={category.id} className="border border-slate-200 bg-slate-50/70 rounded-2xl overflow-hidden transition-all shadow-sm">
                       
                       {/* Accordion Header */}
-                      <div className="flex items-center justify-between px-5 py-4 bg-slate-900/80 border-b border-cyan-500/20">
+                      <div className="flex items-center justify-between px-5 py-4 bg-white border-b border-slate-200">
                         <div className="flex-1 flex items-center gap-3 pr-4">
                           <input
                             type="text"
                             value={category.category}
                             onChange={(e) => handleUpdateSkillCategoryName(category.id, e.target.value)}
-                            className="bg-transparent border-b border-transparent focus:border-cyan-400 text-sm font-black text-white uppercase focus:outline-none py-0.5 px-1 max-w-sm shrink-0 tracking-wider"
+                            className="w-full flex-1 min-w-[240px] max-w-xl bg-transparent border-b-2 border-transparent focus:border-indigo-600 text-sm sm:text-base font-black text-slate-900 uppercase focus:outline-none py-1 px-2 tracking-wider"
                           />
                         </div>
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleAddSkill(category.id)}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider bg-cyan-950 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-900 transition-all cursor-pointer shadow-sm"
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 transition-all cursor-pointer shadow-sm"
                             title="Add skill tile"
                           >
                             <Plus className="w-3.5 h-3.5" />
@@ -813,14 +851,14 @@ export default function App() {
                           </button>
                           <button
                             onClick={() => handleDeleteSkillCategory(category.id)}
-                            className="p-2 rounded-xl border border-rose-500/30 text-rose-400 hover:text-white hover:bg-rose-950/40 transition-all cursor-pointer shadow-sm"
+                            className="p-2 rounded-xl border border-rose-200 text-rose-600 hover:text-white hover:bg-rose-600 transition-all cursor-pointer shadow-sm"
                             title="Delete category"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => toggleCategory(category.id)}
-                            className="p-2 text-cyan-400 hover:text-white transition-all cursor-pointer"
+                            className="p-2 text-slate-500 hover:text-slate-900 transition-all cursor-pointer"
                           >
                             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </button>
@@ -832,52 +870,65 @@ export default function App() {
                         <div className="p-5">
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {category.skills.map((skill, skIdx) => (
-                              <div key={skIdx} className="flex flex-col gap-3 p-4 bg-slate-900/80 border border-cyan-500/20 rounded-xl relative group shadow-sm">
+                              <div key={skIdx} className="flex flex-col gap-3 p-4 bg-white border border-slate-200 rounded-xl relative group shadow-sm">
                                 <button
                                   onClick={() => handleDeleteSkill(category.id, skIdx)}
-                                  className="absolute top-3 right-3 p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+                                  className="absolute top-3 right-3 p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
                                   title="Remove skill"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
                                 </button>
 
                                 <div className="space-y-1.5">
-                                  <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Skill Name</label>
+                                  <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Skill Name</label>
                                   <input
                                     type="text"
                                     value={skill.name}
                                     placeholder="e.g. Python"
                                     onChange={(e) => handleUpdateSkill(category.id, skIdx, 'name', e.target.value)}
-                                    className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-lg px-3 py-2 text-xs text-white focus:outline-none shadow-inner"
+                                    className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-600 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none shadow-sm"
                                   />
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">
                                   <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Lucide Icon</label>
+                                    <div className="flex justify-between items-center">
+                                      <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Lucide Icon</label>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setTargetSkillForIcon({ catId: category.id, skIdx });
+                                          setShowIconModal(true);
+                                        }}
+                                        className="text-[10px] text-indigo-600 hover:underline flex items-center gap-1 font-bold cursor-pointer"
+                                      >
+                                        <Sparkles className="w-3 h-3" />
+                                        <span>Pick</span>
+                                      </button>
+                                    </div>
                                     <input
                                       type="text"
                                       value={skill.iconName}
                                       placeholder="e.g. FileCode2"
                                       onChange={(e) => handleUpdateSkill(category.id, skIdx, 'iconName', e.target.value)}
-                                      className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-lg px-3 py-2 text-xs text-white focus:outline-none shadow-inner"
+                                      className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-600 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none shadow-sm"
                                     />
                                   </div>
                                   <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Brand Color (HEX)</label>
+                                    <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Brand Color (HEX)</label>
                                     <div className="flex gap-2">
                                       <input
                                         type="color"
                                         value={skill.color}
                                         onChange={(e) => handleUpdateSkill(category.id, skIdx, 'color', e.target.value)}
-                                        className="w-7 h-7 rounded border border-cyan-500/30 bg-transparent cursor-pointer p-0 shrink-0"
+                                        className="w-7 h-7 rounded border border-slate-300 bg-transparent cursor-pointer p-0 shrink-0"
                                       />
                                       <input
                                         type="text"
                                         value={skill.color}
-                                        placeholder="#FFFFFF"
+                                        placeholder="#4F46E5"
                                         onChange={(e) => handleUpdateSkill(category.id, skIdx, 'color', e.target.value)}
-                                        className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-lg px-2 py-1 text-[11px] text-white focus:outline-none font-mono shadow-inner"
+                                        className="w-full bg-slate-50 border border-slate-300 focus:border-indigo-600 rounded-lg px-2 py-1 text-[11px] text-slate-900 focus:outline-none font-mono shadow-sm"
                                       />
                                     </div>
                                   </div>
@@ -886,7 +937,7 @@ export default function App() {
                             ))}
                           </div>
                           {category.skills.length === 0 && (
-                            <p className="text-xs text-slate-500 italic text-center py-4">No skills in this category. Click "Add Skill" above.</p>
+                            <p className="text-xs text-slate-400 italic text-center py-4">No skills in this category. Click "Add Skill" above.</p>
                           )}
                         </div>
                       )}
@@ -895,7 +946,7 @@ export default function App() {
                   );
                 })}
                 {data.skillsCategories.length === 0 && (
-                  <p className="text-xs text-slate-500 italic text-center py-8">No skill categories available. Click "New Category" above.</p>
+                  <p className="text-xs text-slate-400 italic text-center py-8">No skill categories available. Click "New Category" above.</p>
                 )}
               </div>
             </div>
@@ -904,17 +955,17 @@ export default function App() {
           {/* TAB 3: EDUCATION */}
           {activeTab === 'education' && (
             <div className="space-y-6">
-              <div className="border-b border-cyan-500/20 pb-4 flex items-center justify-between">
+              <div className="border-b border-slate-200 pb-4 flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-black text-white uppercase tracking-wider flex items-center gap-2">
-                    <BookOpen className="w-5 h-5 text-cyan-400" />
+                  <h3 className="text-lg font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-indigo-600" />
                     <span>Education Milestones</span>
                   </h3>
-                  <p className="text-xs text-slate-400 font-medium mt-1">Manage academic history and degree profiles.</p>
+                  <p className="text-xs text-slate-500 font-medium mt-1">Manage academic history and degree profiles.</p>
                 </div>
                 <button
                   onClick={handleAddEducation}
-                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider text-slate-950 bg-gradient-to-r from-cyan-400 to-teal-300 hover:from-cyan-300 hover:to-teal-200 transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)] cursor-pointer"
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md shadow-indigo-500/20 cursor-pointer"
                 >
                   <PlusCircle className="w-4 h-4" />
                   <span>ADD EDUCATION</span>
@@ -923,10 +974,10 @@ export default function App() {
 
               <div className="space-y-8">
                 {data.educationData.map((item, idx) => (
-                  <div key={item.id} className="p-6 bg-slate-950/60 border border-cyan-500/20 rounded-2xl relative group shadow-md space-y-4">
+                  <div key={item.id} className="p-6 bg-slate-50/70 border border-slate-200 rounded-2xl relative group shadow-sm space-y-4">
                     <button
                       onClick={() => handleDeleteEducation(item.id)}
-                      className="absolute top-5 right-5 p-2 rounded-xl text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 transition-all cursor-pointer shadow-sm"
+                      className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer shadow-sm"
                       title="Delete education milestone"
                     >
                       <Trash2 className="w-4.5 h-4.5" />
@@ -934,63 +985,63 @@ export default function App() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Degree / Qualification</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Degree / Qualification</label>
                         <input
                           type="text"
                           value={item.degree}
                           onChange={(e) => handleUpdateEducation(idx, 'degree', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Field of Study</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Field of Study</label>
                         <input
                           type="text"
                           value={item.field}
                           onChange={(e) => handleUpdateEducation(idx, 'field', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Institution Name</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Institution Name</label>
                         <input
                           type="text"
                           value={item.institution}
                           onChange={(e) => handleUpdateEducation(idx, 'institution', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Duration Period (e.g. 2023 - 2025)</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Duration Period (e.g. 2023 - 2025)</label>
                         <input
                           type="text"
                           value={item.duration}
                           onChange={(e) => handleUpdateEducation(idx, 'duration', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Description Overview</label>
+                      <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Description Overview</label>
                       <textarea
                         rows={2}
                         value={item.description}
                         onChange={(e) => handleUpdateEducation(idx, 'description', e.target.value)}
-                        className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none resize-y shadow-inner"
+                        className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none resize-y shadow-sm"
                       />
                     </div>
 
                     {/* Achievements List */}
-                    <div className="border-t border-cyan-500/20 pt-4 space-y-3">
+                    <div className="border-t border-slate-200 pt-4 space-y-3">
                       <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Key Achievements</label>
+                        <label className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Key Achievements</label>
                         <button
                           onClick={() => handleAddEducationAchievement(idx)}
-                          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-wider bg-cyan-950 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-900 transition-all cursor-pointer shadow-sm"
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-wider bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 transition-all cursor-pointer shadow-sm"
                         >
                           <Plus className="w-3 h-3" />
                           <span>ADD ACHIEVEMENT</span>
@@ -1005,18 +1056,18 @@ export default function App() {
                               value={ach}
                               placeholder="Describe course grade, award, or research..."
                               onChange={(e) => handleUpdateEducationAchievement(idx, achIdx, e.target.value)}
-                              className="flex-1 bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none shadow-inner"
+                              className="flex-1 bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none shadow-sm"
                             />
                             <button
                               onClick={() => handleDeleteEducationAchievement(idx, achIdx)}
-                              className="p-2 rounded-xl border border-rose-500/30 text-rose-400 hover:text-white hover:bg-rose-950/40 transition-all cursor-pointer shadow-sm"
+                              className="p-2 rounded-xl border border-rose-200 text-rose-600 hover:text-white hover:bg-rose-600 transition-all cursor-pointer shadow-sm"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         ))}
                         {item.achievements.length === 0 && (
-                          <p className="text-[11px] text-slate-500 italic py-1">No achievements linked. Click "Add Achievement" above.</p>
+                          <p className="text-[11px] text-slate-400 italic py-1">No achievements linked. Click "Add Achievement" above.</p>
                         )}
                       </div>
                     </div>
@@ -1024,7 +1075,7 @@ export default function App() {
                   </div>
                 ))}
                 {data.educationData.length === 0 && (
-                  <p className="text-xs text-slate-500 italic text-center py-12">No education milestones available. Click "Add Education" above.</p>
+                  <p className="text-xs text-slate-400 italic text-center py-12">No education milestones available. Click "Add Education" above.</p>
                 )}
               </div>
             </div>
@@ -1033,17 +1084,17 @@ export default function App() {
           {/* TAB 4: EXPERIENCE */}
           {activeTab === 'experience' && (
             <div className="space-y-6">
-              <div className="border-b border-cyan-500/20 pb-4 flex items-center justify-between">
+              <div className="border-b border-slate-200 pb-4 flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-black text-white uppercase tracking-wider flex items-center gap-2">
-                    <Award className="w-5 h-5 text-cyan-400" />
+                  <h3 className="text-lg font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <Award className="w-5 h-5 text-indigo-600" />
                     <span>Experience Timeline</span>
                   </h3>
-                  <p className="text-xs text-slate-400 font-medium mt-1">Manage jobs, internships, roles, and tech stacks.</p>
+                  <p className="text-xs text-slate-500 font-medium mt-1">Manage jobs, internships, roles, and tech stacks.</p>
                 </div>
                 <button
                   onClick={handleAddExperience}
-                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider text-slate-950 bg-gradient-to-r from-cyan-400 to-teal-300 hover:from-cyan-300 hover:to-teal-200 transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)] cursor-pointer"
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md shadow-indigo-500/20 cursor-pointer"
                 >
                   <PlusCircle className="w-4 h-4" />
                   <span>ADD EXPERIENCE</span>
@@ -1052,10 +1103,10 @@ export default function App() {
 
               <div className="space-y-8">
                 {data.experienceData.map((item, idx) => (
-                  <div key={item.id} className="p-6 bg-slate-950/60 border border-cyan-500/20 rounded-2xl relative group shadow-md space-y-4">
+                  <div key={item.id} className="p-6 bg-slate-50/70 border border-slate-200 rounded-2xl relative group shadow-sm space-y-4">
                     <button
                       onClick={() => handleDeleteExperience(item.id)}
-                      className="absolute top-5 right-5 p-2 rounded-xl text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 transition-all cursor-pointer shadow-sm"
+                      className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer shadow-sm"
                       title="Delete experience item"
                     >
                       <Trash2 className="w-4.5 h-4.5" />
@@ -1063,49 +1114,49 @@ export default function App() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Company Name</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Company Name</label>
                         <input
                           type="text"
                           value={item.company}
                           onChange={(e) => handleUpdateExperience(idx, 'company', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Role / Title</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Role / Title</label>
                         <input
                           type="text"
                           value={item.role}
                           onChange={(e) => handleUpdateExperience(idx, 'role', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Duration Period (e.g. AUG 2025 - PRESENT)</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Duration Period (e.g. AUG 2025 - PRESENT)</label>
                         <input
                           type="text"
                           value={item.period}
                           onChange={(e) => handleUpdateExperience(idx, 'period', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Location (Optional)</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Location (Optional)</label>
                         <input
                           type="text"
                           value={item.location || ''}
                           placeholder="e.g. Remote, Chennai"
                           onChange={(e) => handleUpdateExperience(idx, 'location', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Tech Stack (comma-separated list)</label>
+                      <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Tech Stack (comma-separated list)</label>
                       <input
                         type="text"
                         value={item.techStack.join(', ')}
@@ -1114,27 +1165,27 @@ export default function App() {
                           const stack = e.target.value.split(',').map(s => s.trim()).filter(s => s !== '');
                           handleUpdateExperience(idx, 'techStack', stack);
                         }}
-                        className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none font-mono shadow-inner"
+                        className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none font-mono shadow-sm"
                       />
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Summary (Overview of experience)</label>
+                      <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Summary (Overview of experience)</label>
                       <textarea
                         rows={2}
                         value={item.summary}
                         onChange={(e) => handleUpdateExperience(idx, 'summary', e.target.value)}
-                        className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none resize-y shadow-inner"
+                        className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none resize-y shadow-sm"
                       />
                     </div>
 
                     {/* Bullet Points List */}
-                    <div className="border-t border-cyan-500/20 pt-4 space-y-3">
+                    <div className="border-t border-slate-200 pt-4 space-y-3">
                       <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Job Descriptions / Tasks</label>
+                        <label className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Job Descriptions / Tasks</label>
                         <button
                           onClick={() => handleAddExperienceBullet(idx)}
-                          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-wider bg-cyan-950 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-900 transition-all cursor-pointer shadow-sm"
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-wider bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 transition-all cursor-pointer shadow-sm"
                         >
                           <Plus className="w-3 h-3" />
                           <span>ADD BULLET POINT</span>
@@ -1149,18 +1200,18 @@ export default function App() {
                               value={bullet}
                               placeholder="Describe a key task, metric, or success achievement..."
                               onChange={(e) => handleUpdateExperienceBullet(idx, bulIdx, e.target.value)}
-                              className="flex-1 bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none shadow-inner"
+                              className="flex-1 bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none shadow-sm"
                             />
                             <button
                               onClick={() => handleDeleteExperienceBullet(idx, bulIdx)}
-                              className="p-2 rounded-xl border border-rose-500/30 text-rose-400 hover:text-white hover:bg-rose-950/40 transition-all cursor-pointer shadow-sm"
+                              className="p-2 rounded-xl border border-rose-200 text-rose-600 hover:text-white hover:bg-rose-600 transition-all cursor-pointer shadow-sm"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         ))}
                         {item.bulletPoints.length === 0 && (
-                          <p className="text-[11px] text-slate-500 italic py-1">No detail bullets added. Click "Add Bullet Point" above.</p>
+                          <p className="text-[11px] text-slate-400 italic py-1">No detail bullets added. Click "Add Bullet Point" above.</p>
                         )}
                       </div>
                     </div>
@@ -1168,7 +1219,7 @@ export default function App() {
                   </div>
                 ))}
                 {data.experienceData.length === 0 && (
-                  <p className="text-xs text-slate-500 italic text-center py-12">No experience timeline items available. Click "Add Experience" above.</p>
+                  <p className="text-xs text-slate-400 italic text-center py-12">No experience timeline items available. Click "Add Experience" above.</p>
                 )}
               </div>
             </div>
@@ -1177,17 +1228,17 @@ export default function App() {
           {/* TAB 5: PROJECTS BUILDER */}
           {activeTab === 'projects' && (
             <div className="space-y-6">
-              <div className="border-b border-cyan-500/20 pb-4 flex items-center justify-between">
+              <div className="border-b border-slate-200 pb-4 flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-black text-white uppercase tracking-wider flex items-center gap-2">
-                    <FolderGit2 className="w-5 h-5 text-cyan-400" />
+                  <h3 className="text-lg font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <FolderGit2 className="w-5 h-5 text-indigo-600" />
                     <span>Projects Builder</span>
                   </h3>
-                  <p className="text-xs text-slate-400 font-medium mt-1">Manage showcased projects, dynamic stats, architectures, and images.</p>
+                  <p className="text-xs text-slate-500 font-medium mt-1">Manage showcased projects, dynamic stats, architectures, and images.</p>
                 </div>
                 <button
                   onClick={handleAddProject}
-                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider text-slate-950 bg-gradient-to-r from-cyan-400 to-teal-300 hover:from-cyan-300 hover:to-teal-200 transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)] cursor-pointer"
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-wider text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md shadow-indigo-500/20 cursor-pointer"
                 >
                   <PlusCircle className="w-4 h-4" />
                   <span>ADD PROJECT</span>
@@ -1196,53 +1247,53 @@ export default function App() {
 
               <div className="space-y-12">
                 {data.projectsData.map((item, idx) => (
-                  <div key={item.id} className="p-6 bg-slate-950/60 border border-cyan-500/20 rounded-2xl relative group shadow-md space-y-6">
+                  <div key={item.id} className="p-6 bg-slate-50/70 border border-slate-200 rounded-2xl relative group shadow-sm space-y-6">
                     <button
                       onClick={() => handleDeleteProject(item.id)}
-                      className="absolute top-5 right-5 p-2 rounded-xl text-slate-500 hover:text-rose-400 hover:bg-rose-950/30 transition-all cursor-pointer shadow-sm"
+                      className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer shadow-sm"
                       title="Delete project"
                     >
                       <Trash2 className="w-4.5 h-4.5" />
                     </button>
 
                     <div>
-                      <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-widest border-b border-cyan-500/20 pb-2">Basic Info</h4>
+                      <h4 className="text-xs font-bold text-indigo-600 uppercase tracking-widest border-b border-slate-200 pb-2">Basic Info</h4>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Project Title</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Project Title</label>
                         <input
                           type="text"
                           value={item.title}
                           onChange={(e) => handleUpdateProject(idx, 'title', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Subtitle / Caption</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Subtitle / Caption</label>
                         <input
                           type="text"
                           value={item.subtitle}
                           onChange={(e) => handleUpdateProject(idx, 'subtitle', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Local Static Image Link</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Local Static Image Link</label>
                         <input
                           type="text"
                           value={item.image}
                           placeholder="e.g. /images/sales_dashboard.jpg"
                           onChange={(e) => handleUpdateProject(idx, 'image', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none font-mono shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none font-mono shadow-sm"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Tags / Stack (comma-separated)</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Tags / Stack (comma-separated)</label>
                         <input
                           type="text"
                           value={item.tags.join(', ')}
@@ -1251,73 +1302,73 @@ export default function App() {
                             const tags = e.target.value.split(',').map(s => s.trim()).filter(s => s !== '');
                             handleUpdateProject(idx, 'tags', tags);
                           }}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Live Demo Link (Use # if none)</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Live Demo Link (Use # if none)</label>
                         <input
                           type="text"
                           value={item.demoUrl || ''}
                           onChange={(e) => handleUpdateProject(idx, 'demoUrl', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">GitHub Repository Link (Use # if none)</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">GitHub Repository Link (Use # if none)</label>
                         <input
                           type="text"
                           value={item.githubUrl || ''}
                           onChange={(e) => handleUpdateProject(idx, 'githubUrl', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Short Description (Grid card snippet)</label>
+                      <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Short Description (Grid card snippet)</label>
                       <textarea
                         rows={2}
                         value={item.description}
                         onChange={(e) => handleUpdateProject(idx, 'description', e.target.value)}
-                        className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none resize-y shadow-inner"
+                        className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none resize-y shadow-sm"
                       />
                     </div>
 
                     <div className="space-y-4">
-                      <h4 className="text-xs font-bold text-cyan-400 uppercase tracking-widest border-b border-cyan-500/20 pb-2">Modal Details</h4>
+                      <h4 className="text-xs font-bold text-indigo-600 uppercase tracking-widest border-b border-slate-200 pb-2">Modal Details</h4>
                       
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Project Overview</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Project Overview</label>
                         <textarea
                           rows={3}
                           value={item.fullDetails.overview}
                           onChange={(e) => handleUpdateProjectDetails(idx, 'overview', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none resize-y shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none resize-y shadow-sm"
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Architecture / Pipeline Workflow</label>
+                        <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Architecture / Pipeline Workflow</label>
                         <input
                           type="text"
                           value={item.fullDetails.architecture}
                           placeholder="e.g. Excel -> SQL Server -> Power BI"
                           onChange={(e) => handleUpdateProjectDetails(idx, 'architecture', e.target.value)}
-                          className="w-full bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none shadow-inner"
+                          className="w-full bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none shadow-sm"
                         />
                       </div>
 
                       {/* Modal Key Features */}
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Key Features Checklist</label>
+                          <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Key Features Checklist</label>
                           <button
                             onClick={() => handleAddProjectFeature(idx)}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-wider bg-cyan-950 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-900 transition-all cursor-pointer shadow-sm"
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-wider bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 transition-all cursor-pointer shadow-sm"
                           >
                             <Plus className="w-3 h-3" />
                             <span>ADD FEATURE</span>
@@ -1332,18 +1383,18 @@ export default function App() {
                                 value={feat}
                                 placeholder="Describe a technical feature or design parameter..."
                                 onChange={(e) => handleUpdateProjectFeature(idx, featIdx, e.target.value)}
-                                className="flex-1 bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none shadow-inner"
+                                className="flex-1 bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none shadow-sm"
                               />
                               <button
                                 onClick={() => handleDeleteProjectFeature(idx, featIdx)}
-                                className="p-2 rounded-xl border border-rose-500/30 text-rose-400 hover:text-white hover:bg-rose-950/40 transition-all cursor-pointer shadow-sm"
+                                className="p-2 rounded-xl border border-rose-200 text-rose-600 hover:text-white hover:bg-rose-600 transition-all cursor-pointer shadow-sm"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
                             </div>
                           ))}
                           {item.fullDetails.keyFeatures.length === 0 && (
-                            <p className="text-[10px] text-slate-500 italic py-1">No feature checklist added. Click "Add Feature" above.</p>
+                            <p className="text-[10px] text-slate-400 italic py-1">No feature checklist added. Click "Add Feature" above.</p>
                           )}
                         </div>
                       </div>
@@ -1351,10 +1402,10 @@ export default function App() {
                       {/* Modal Metrics */}
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <label className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider">Project Metrics / KPIs</label>
+                          <label className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Project Metrics / KPIs</label>
                           <button
                             onClick={() => handleAddProjectMetric(idx)}
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-wider bg-cyan-950 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-900 transition-all cursor-pointer shadow-sm"
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-wider bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 transition-all cursor-pointer shadow-sm"
                           >
                             <Plus className="w-3 h-3" />
                             <span>ADD METRIC</span>
@@ -1370,26 +1421,26 @@ export default function App() {
                                   placeholder="Metric Name (e.g. Data Points)"
                                   value={metric.label}
                                   onChange={(e) => handleUpdateProjectMetric(idx, metIdx, 'label', e.target.value)}
-                                  className="bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-3 py-2 text-xs text-white focus:outline-none shadow-inner"
+                                  className="bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none shadow-sm"
                                 />
                                 <input
                                   type="text"
                                   placeholder="KPI Value (e.g. 150,000+)"
                                   value={metric.value}
                                   onChange={(e) => handleUpdateProjectMetric(idx, metIdx, 'value', e.target.value)}
-                                  className="bg-slate-950/90 border border-cyan-500/30 focus:border-cyan-400 rounded-xl px-3 py-2 text-xs text-white focus:outline-none shadow-inner"
+                                  className="bg-white border border-slate-300 focus:border-indigo-600 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none shadow-sm"
                                 />
                               </div>
                               <button
                                 onClick={() => handleDeleteProjectMetric(idx, metIdx)}
-                                className="p-2 rounded-xl border border-rose-500/30 text-rose-400 hover:text-white hover:bg-rose-950/40 transition-all cursor-pointer shadow-sm"
+                                className="p-2 rounded-xl border border-rose-200 text-rose-600 hover:text-white hover:bg-rose-600 transition-all cursor-pointer shadow-sm"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
                             </div>
                           ))}
                           {item.fullDetails.metrics.length === 0 && (
-                            <p className="text-[10px] text-slate-500 italic py-1">No metrics defined. Click "Add Metric" above.</p>
+                            <p className="text-[10px] text-slate-400 italic py-1">No metrics defined. Click "Add Metric" above.</p>
                           )}
                         </div>
                       </div>
@@ -1399,7 +1450,7 @@ export default function App() {
                   </div>
                 ))}
                 {data.projectsData.length === 0 && (
-                  <p className="text-xs text-slate-500 italic text-center py-12">No projects configured. Click "Add Project" above.</p>
+                  <p className="text-xs text-slate-400 italic text-center py-12">No projects configured. Click "Add Project" above.</p>
                 )}
               </div>
             </div>
@@ -1408,9 +1459,101 @@ export default function App() {
         </main>
       </div>
 
+      {/* Icon Picker / Cheatsheet Modal */}
+      {showIconModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
+          <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+            
+            {/* Modal Header */}
+            <div className="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50/80">
+              <div>
+                <h3 className="text-lg font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-indigo-600" />
+                  <span>Lucide Icons Directory</span>
+                </h3>
+                <p className="text-xs text-slate-500 font-medium mt-1">
+                  {targetSkillForIcon
+                    ? 'Click any icon tile to assign it directly to this skill.'
+                    : 'Click any icon tile to copy its exact name to your clipboard.'}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowIconModal(false);
+                  setTargetSkillForIcon(null);
+                }}
+                className="p-2 rounded-xl border border-slate-200 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Search & Filter */}
+            <div className="p-6 pb-2 space-y-4">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-600" />
+                <input
+                  type="text"
+                  placeholder="Search icon name (e.g. Database, Terminal, Code, Cpu)..."
+                  value={iconSearch}
+                  onChange={(e) => setIconSearch(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-300 focus:border-indigo-600 rounded-xl text-xs text-slate-900 focus:outline-none shadow-sm"
+                />
+              </div>
+
+              {copiedIcon && (
+                <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 p-3 rounded-xl shadow-sm">
+                  <Check className="w-4 h-4 text-emerald-600" />
+                  <span>Copied icon name "{copiedIcon}" to clipboard!</span>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Icon Grid */}
+            <div className="p-6 overflow-y-auto flex-1">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {POPULAR_SKILL_ICONS.filter(name => name.toLowerCase().includes(iconSearch.toLowerCase())).map((iconName) => {
+                  const IconComp = (Icons as any)[iconName] || HelpCircle;
+                  return (
+                    <button
+                      key={iconName}
+                      type="button"
+                      onClick={() => handleSelectIcon(iconName)}
+                      className="flex flex-col items-center justify-center p-4 bg-slate-50 border border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/60 rounded-2xl transition-all cursor-pointer group shadow-sm"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 mb-2 group-hover:scale-110 transition-transform">
+                        <IconComp className="w-5 h-5" />
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-700 group-hover:text-indigo-600 truncate w-full text-center">
+                        {iconName}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Modal Footer Link */}
+            <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600 font-semibold">
+              <span>Looking for 1,000+ more icons?</span>
+              <a
+                href="https://lucide.dev/icons"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 transition-all font-bold"
+              >
+                <span>Full Lucide Library</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
-      <footer className="bg-slate-950/80 border-t border-cyan-500/10 py-6 text-center text-xs text-slate-500 font-semibold mt-10 backdrop-blur-md relative z-10">
-        <span>Portfolio CRUD Portal • Secured Session • Cyber Glassmorphic Theme</span>
+      <footer className="bg-white/80 border-t border-slate-200/80 py-6 text-center text-xs text-slate-500 font-semibold mt-10 backdrop-blur-md relative z-10">
+        <span>Portfolio CRUD Studio • Clean Light Glass Theme • Secured Session</span>
       </footer>
     </div>
   );
