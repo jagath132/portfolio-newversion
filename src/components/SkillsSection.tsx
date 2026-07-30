@@ -1,43 +1,7 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import {
-  FileCode2,
-  Database,
-  Coffee,
-  BarChart3,
-  FileSpreadsheet,
-  PieChart,
-  Workflow,
-  Zap,
-  CheckCircle2,
-  ShieldCheck,
-  SearchCheck,
-  GitBranch,
-  Github,
-  Layers,
-  Briefcase,
-  TrendingUp,
-  Search,
-} from 'lucide-react';
-
-const iconMap: Record<string, React.ElementType> = {
-  FileCode2,
-  Database,
-  Coffee,
-  BarChart3,
-  FileSpreadsheet,
-  PieChart,
-  Workflow,
-  Zap,
-  CheckCircle2,
-  ShieldCheck,
-  SearchCheck,
-  GitBranch,
-  Github,
-  Layers,
-  Briefcase,
-  TrendingUp,
-};
+import * as Icons from 'lucide-react';
+import { Search } from 'lucide-react';
 
 export const SkillsSection: React.FC = () => {
   const { skillsCategories } = usePortfolio();
@@ -117,7 +81,7 @@ export const SkillsSection: React.FC = () => {
                 {/* Skill List */}
                 <div className="grid grid-cols-3 gap-3 pt-5">
                   {cat.skills.map((skill) => {
-                    const IconComponent = iconMap[skill.iconName] || FileCode2;
+                    const IconComponent = (Icons as any)[skill.iconName] || Icons.FileCode2;
                     return (
                       <div
                         key={skill.name}
