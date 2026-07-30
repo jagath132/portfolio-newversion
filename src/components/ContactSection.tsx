@@ -9,7 +9,6 @@ import {
   Tag,
   Clock,
   Zap,
-  ShieldCheck,
   X
 } from 'lucide-react';
 
@@ -152,12 +151,6 @@ export const ContactSection: React.FC = () => {
                     {showForm ? 'Click to close' : 'Click center'}
                   </span>
                 </button>
-
-                {/* Floating Badges */}
-                <div className="absolute -top-1 left-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-cyan-500/40 text-slate-200 text-[11px] font-bold shadow-[0_0_15px_rgba(6,182,212,0.2)] flex items-center gap-1.5 animate-float pointer-events-none">
-                  <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>n8n / Power Apps</span>
-                </div>
 
                 <div className="absolute -bottom-1 right-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-teal-500/40 text-slate-200 text-[11px] font-bold shadow-[0_0_15px_rgba(20,184,166,0.2)] flex items-center gap-1.5 animate-float-reverse pointer-events-none">
                   <Clock className="w-3.5 h-3.5 text-teal-400" />
