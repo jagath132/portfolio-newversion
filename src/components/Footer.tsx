@@ -82,58 +82,12 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Direct Connections / Contacts (Col span 4) */}
+          {/* Direct Connections / Social Icons Row */}
           <div className="md:col-span-4 space-y-4">
             <h4 className="text-xs font-bold tracking-widest text-cyan-400 uppercase">
               CONNECT DIRECTLY
             </h4>
-            <div className="space-y-3.5 text-sm font-semibold text-slate-300">
-              {/* Location */}
-              <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-                <span>Chennai, Tamil Nadu, India</span>
-              </div>
-              
-              {/* Email */}
-              <div className="flex items-start gap-2.5">
-                <Mail className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-                <a
-                  href={personalInfo.socials.email}
-                  className="hover:text-cyan-300 transition-colors border-b border-transparent hover:border-cyan-300/40"
-                >
-                  {personalInfo.socials.email.replace('mailto:', '')}
-                </a>
-              </div>
-
-              {/* LinkedIn Quick Connect */}
-              <div className="flex items-start gap-2.5">
-                <Linkedin className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-                <a
-                  href={personalInfo.socials.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 hover:text-cyan-300 transition-colors border-b border-transparent hover:border-cyan-300/40"
-                >
-                  <span>Professional LinkedIn</span>
-                  <ExternalLink className="w-3 h-3 text-slate-500" />
-                </a>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Divider */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent"></div>
-
-        {/* Bottom Bar: Socials, Back to Top */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-end gap-6">
-
-          {/* Social Icons row & Back to Top */}
-          <div className="flex items-center gap-4 order-1 md:order-2">
-            
-            {/* Social Icons group */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-3 pt-1">
               {[
                 { icon: Github, href: personalInfo.socials.github, label: 'GitHub' },
                 { icon: Linkedin, href: personalInfo.socials.linkedin, label: 'LinkedIn' },
@@ -147,29 +101,27 @@ export const Footer: React.FC = () => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400/50 hover:bg-cyan-950/20 hover:shadow-[0_0_15px_rgba(6,182,212,0.25)] hover:scale-110 active:scale-95 transition-all duration-300 shadow-sm"
+                    className="w-12 h-12 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400/60 hover:bg-cyan-950/40 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:-translate-y-1 active:scale-95 transition-all duration-300 shadow-md"
                     aria-label={social.label}
                   >
-                    <Icon className="w-4 h-4" />
+                    <Icon className="w-5 h-5" />
                   </a>
                 );
               })}
+
+              {/* Back to top button */}
+              <button
+                onClick={scrollToTop}
+                className="w-12 h-12 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-center text-cyan-400 hover:text-cyan-300 hover:border-cyan-400/60 hover:bg-cyan-950/40 hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:-translate-y-1 active:scale-95 transition-all duration-300 shadow-md cursor-pointer"
+                title="Back to Top"
+                aria-label="Back to top"
+              >
+                <ArrowUp className="w-5 h-5" />
+              </button>
             </div>
-
-            {/* Back to top button */}
-            <button
-              onClick={scrollToTop}
-              className="w-10 h-10 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-center text-cyan-400 hover:text-cyan-300 hover:border-cyan-400/50 hover:bg-cyan-950/30 hover:shadow-[0_0_15px_rgba(6,182,212,0.25)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 shadow-sm"
-              title="Back to Top"
-              aria-label="Back to top"
-            >
-              <ArrowUp className="w-4 h-4" />
-            </button>
-
           </div>
 
         </div>
-
       </div>
     </footer>
   );

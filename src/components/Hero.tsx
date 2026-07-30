@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowDown, ChevronLeft, ChevronRight, FileText, Sparkles } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
 import { HERO_BG_IMAGE } from '../data/portfolioData';
 import { usePortfolio } from '../context/PortfolioContext';
 
@@ -65,31 +65,6 @@ export const Hero: React.FC = () => {
             className="px-7 py-3.5 rounded-full text-xs sm:text-sm font-bold tracking-wider text-cyan-300 bg-slate-900/80 border border-cyan-500/50 hover:bg-cyan-950/60 hover:border-cyan-400 transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.2)] hover:shadow-[0_0_25px_rgba(6,182,212,0.5)] hover:scale-105 active:scale-95"
           >
             CONTACT ME
-          </button>
-
-
-        </div>
-
-        {/* Carousel / Navigation Widget as in visual mockup */}
-        <div className="flex items-center space-x-3 pt-6">
-          <button
-            onClick={() => scrollToSection('about')}
-            className="p-2.5 rounded-full bg-slate-900/80 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-950 hover:border-cyan-400 transition-all shadow-[0_0_10px_rgba(6,182,212,0.2)]"
-            title="Previous Section"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <div className="flex space-x-1.5">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#06b6d4]"></span>
-            <span className="w-2 h-2 rounded-full bg-slate-700"></span>
-            <span className="w-2 h-2 rounded-full bg-slate-700"></span>
-          </div>
-          <button
-            onClick={() => scrollToSection('about')}
-            className="p-2.5 rounded-full bg-slate-900/80 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-950 hover:border-cyan-400 transition-all shadow-[0_0_10px_rgba(6,182,212,0.2)]"
-            title="Next Section"
-          >
-            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
