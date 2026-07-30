@@ -297,6 +297,7 @@ export default function App() {
         return cat;
       })
     }));
+    setExpandedCategories(prev => ({ ...prev, [catId]: true }));
   };
 
   const handleUpdateSkill = (catId: string, skillIndex: number, field: string, value: any) => {
@@ -759,7 +760,7 @@ export default function App() {
 
               <div className="space-y-4">
                 {data.skillsCategories.map((category) => {
-                  const isExpanded = expandedCategories[category.id] !== false;
+                  const isExpanded = Boolean(expandedCategories[category.id]);
                   return (
                     <div key={category.id} className="border border-slate-850 bg-slate-950/40 rounded-2xl overflow-hidden transition-all">
                       
