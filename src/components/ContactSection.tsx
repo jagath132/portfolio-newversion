@@ -47,45 +47,73 @@ export const ContactSection: React.FC = () => {
     const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '98039fb8-4525-4f44-968a-3912eb290b21';
 
     try {
+      // 1. Primary submission via Web3Forms API using FormData
+      const formPayload = new FormData();
+      formPayload.append('access_key', accessKey);
+      formPayload.append('name', formData.name);
+      formPayload.append('email', formData.email);
+      formPayload.append('subject', formData.subject || 'Portfolio Contact');
+      formPayload.append('message', formData.message);
+      formPayload.append('from_name', formData.name);
+
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          access_key: accessKey,
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-          from_name: formData.name,
-        }),
+        body: formPayload,
       });
 
-      const data = await response.json();
-      if (response.ok && data.success) {
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch (pErr) {
+        console.warn('Failed to parse Web3Forms JSON response:', pErr);
+      }
+
+      if (response.ok && data && data.success) {
         setSubmittedMessage(`Thank you ${formData.name}! Your message regarding "${formData.subject}" has been sent successfully.`);
         setFormData({ name: '', email: '', subject: 'Process Automation', message: '' });
+        return;
+      }
+
+      // 2. Fallback to /api/contact endpoint if Web3Forms direct call failed
+      console.warn('Web3Forms direct submission returned non-success. Calling /api/contact fallback...');
+      const apiRes = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      let apiData: any = null;
+      try {
+        apiData = await apiRes.json();
+      } catch (pErr) {
+        console.warn('Failed to parse /api/contact JSON response:', pErr);
+      }
+
+      if (apiRes.ok && (apiData?.success || apiData?.message)) {
+        setSubmittedMessage(apiData.message || `Thank you ${formData.name}! Your message has been sent successfully.`);
+        setFormData({ name: '', email: '', subject: 'Process Automation', message: '' });
       } else {
-        // Fallback to local /api/contact backend endpoint
+        setErrorMessage(data?.message || apiData?.error || 'Failed to send message. Please try again.');
+      }
+    } catch (err) {
+      console.error('Contact submission network error:', err);
+      // Final attempt to hit local /api/contact
+      try {
         const apiRes = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
         });
         const apiData = await apiRes.json();
-        if (apiRes.ok) {
-          setSubmittedMessage(apiData.message || 'Thank you! Your message has been sent successfully.');
+        if (apiRes.ok && (apiData?.success || apiData?.message)) {
+          setSubmittedMessage(apiData.message || `Thank you ${formData.name}! Your message has been sent successfully.`);
           setFormData({ name: '', email: '', subject: 'Process Automation', message: '' });
-        } else {
-          setErrorMessage(data.message || apiData.error || 'Failed to send message. Please try again.');
+          return;
         }
+      } catch (fallbackErr) {
+        console.error('Fallback /api/contact failed:', fallbackErr);
       }
-    } catch (err) {
-      console.error('Contact submission error:', err);
-      setSubmittedMessage(`Thank you ${formData.name}! Your message has been sent. Jagath will review it shortly.`);
-      setFormData({ name: '', email: '', subject: 'Process Automation', message: '' });
+      setErrorMessage('Network error while sending message. Please check your connection and try again.');
     } finally {
       setSubmitting(false);
     }
