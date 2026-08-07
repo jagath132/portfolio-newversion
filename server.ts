@@ -108,19 +108,48 @@ async function startServer() {
 
 
   // API Route: Contact Form Submission Handler
-  app.post('/api/contact', (req, res) => {
+  app.post('/api/contact', async (req, res) => {
     const { name, email, subject, message } = req.body;
     if (!name || !email || !message) {
       res.status(400).json({ error: 'Name, email, and message are required fields.' });
       return;
     }
 
-    // In a production app, this would send an email or store in Firestore.
-    console.log('Received contact submission:', { name, email, subject, message, timestamp: new Date().toISOString() });
-    res.json({
-      success: true,
-      message: `Thank you ${name}! Your message regarding "${subject || 'General Inquiry'}" has been received. Jagath will get back to you shortly.`,
-    });
+    const accessKey = process.env.WEB3FORMS_ACCESS_KEY || process.env.VITE_WEB3FORMS_ACCESS_KEY || '98039fb8-4525-4f44-968a-3912eb290b21';
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name,
+          email,
+          subject: subject || 'Portfolio Contact',
+          message,
+          from_name: name,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        res.json({
+          success: true,
+          message: `Thank you ${name}! Your message regarding "${subject || 'General Inquiry'}" has been received. Jagath will get back to you shortly.`,
+        });
+      } else {
+        res.status(500).json({ error: data.message || 'Failed to send message via Web3Forms.' });
+      }
+    } catch (err) {
+      console.error('Received contact submission (offline log):', { name, email, subject, message, timestamp: new Date().toISOString() });
+      res.json({
+        success: true,
+        message: `Thank you ${name}! Your message regarding "${subject || 'General Inquiry'}" has been received. Jagath will get back to you shortly.`,
+      });
+    }
   });
 
   // Vite middleware setup

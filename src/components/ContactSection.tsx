@@ -44,19 +44,43 @@ export const ContactSection: React.FC = () => {
     setSubmittedMessage(null);
     setErrorMessage(null);
 
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '98039fb8-4525-4f44-968a-3912eb290b21';
+
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          from_name: formData.name,
+        }),
       });
 
       const data = await response.json();
-      if (response.ok) {
-        setSubmittedMessage(data.message || 'Thank you! Your message has been sent successfully.');
+      if (response.ok && data.success) {
+        setSubmittedMessage(`Thank you ${formData.name}! Your message regarding "${formData.subject}" has been sent successfully.`);
         setFormData({ name: '', email: '', subject: 'Process Automation', message: '' });
       } else {
-        setErrorMessage(data.error || 'Failed to send message. Please try again.');
+        // Fallback to local /api/contact backend endpoint
+        const apiRes = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+        const apiData = await apiRes.json();
+        if (apiRes.ok) {
+          setSubmittedMessage(apiData.message || 'Thank you! Your message has been sent successfully.');
+          setFormData({ name: '', email: '', subject: 'Process Automation', message: '' });
+        } else {
+          setErrorMessage(data.message || apiData.error || 'Failed to send message. Please try again.');
+        }
       }
     } catch (err) {
       console.error('Contact submission error:', err);
