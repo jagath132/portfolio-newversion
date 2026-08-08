@@ -52,9 +52,11 @@ export const ContactSection: React.FC = () => {
       formPayload.append('access_key', accessKey);
       formPayload.append('name', formData.name);
       formPayload.append('email', formData.email);
-      formPayload.append('subject', formData.subject || 'Portfolio Contact');
+      formPayload.append('replyto', formData.email);
+      formPayload.append('subject', `[Portfolio Contact] ${formData.subject || 'General Inquiry'} - ${formData.name}`);
       formPayload.append('message', formData.message);
       formPayload.append('from_name', formData.name);
+      formPayload.append('botcheck', '');
 
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
@@ -241,6 +243,8 @@ export const ContactSection: React.FC = () => {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
+                  {/* Honeypot Botcheck (Hidden from legitimate users) */}
+                  <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
                   <div className="space-y-1 border-b border-cyan-500/20 pb-4 pr-10">
                     <h3 className="text-xl font-black text-white uppercase tracking-wider flex items-center gap-2">
                       <MessageSquare className="w-5 h-5 text-cyan-400" />

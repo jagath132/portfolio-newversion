@@ -129,9 +129,11 @@ async function startServer() {
           access_key: accessKey,
           name,
           email,
-          subject: subject || 'Portfolio Contact',
+          replyto: email,
+          subject: `[Portfolio Contact] ${subject || 'General Inquiry'} - ${name}`,
           message,
           from_name: name,
+          botcheck: '',
         }),
       });
 
